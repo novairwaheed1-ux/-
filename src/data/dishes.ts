@@ -51,6 +51,7 @@ import fajitaPlateImg from '../assets/images/fajita_skillet_plate_1788790833953.
 import escalopePanePlateImg from '../assets/images/escalope_pane_plate_1788790849571.jpg';
 import orientalSaladsMezzeImg from '../assets/images/oriental_salads_mezze_1788790865556.jpg';
 import coldDrinksCansImg from '../assets/images/cold_drinks_cans_1788790883311.jpg';
+import sultanRestaurantCoverImg from '../assets/images/sultan_restaurant_cover_1788966161544.jpg';
 
 export {
   crispyFishImg,
@@ -60,6 +61,7 @@ export {
   shawarmaWrapImg,
   savoryCrepeImg,
   sultanChefLogoImg,
+  sultanRestaurantCoverImg,
   seafoodMenuBoardImg,
   syrianMenuBoardImg,
   syrianShawarmaBroastedImg,
@@ -2298,4 +2300,20 @@ export const resetToDefaultDishes = (): DishItem[] => {
     console.error('Error clearing dishes:', err);
   }
   return DEFAULT_DISHES;
+};
+
+// Aggregates all menu image URLs to pre-warm browser and GPU memory
+export const getAllMenuImageUrls = (): string[] => {
+  const urls = new Set<string>();
+  if (sultanChefLogoImg) urls.add(sultanChefLogoImg);
+  if (sultanRestaurantCoverImg) urls.add(sultanRestaurantCoverImg);
+  if (seafoodMenuBoardImg) urls.add(seafoodMenuBoardImg);
+  if (syrianMenuBoardImg) urls.add(syrianMenuBoardImg);
+  if (syrianShawarmaBroastedImg) urls.add(syrianShawarmaBroastedImg);
+  
+  DEFAULT_DISHES.forEach((dish) => {
+    if (dish.image) urls.add(dish.image);
+  });
+  
+  return Array.from(urls);
 };

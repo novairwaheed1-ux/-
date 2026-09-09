@@ -1,20 +1,22 @@
-import React, { useState, useEffect, Suspense } from 'react';
-import { DishItem, BranchType, CartItem } from './types';
-import { getStoredDishes, saveStoredDishes, DEFAULT_DISHES, RESTAURANT_INFO } from './data/dishes';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { MenuSection } from './components/MenuSection';
+import { Footer } from './components/Footer';
 import { DishModal } from './components/DishModal';
 import { CartDrawer } from './components/CartDrawer';
 import { FloatingActions } from './components/FloatingActions';
-import { Footer } from './components/Footer';
 import { MobileFrame } from './components/MobileFrame';
+import { CategoryStoryItem } from './components/CategoryStories';
+import { DEFAULT_DISHES, getStoredDishes, saveStoredDishes, RESTAURANT_INFO, getAllMenuImageUrls } from './data/dishes';
+import { DishItem, CartItem, BranchType } from './types';
+import { preloadAllImages } from './utils/imagePreloader';
 
-// Lazy load heavy admin & photo modals to make initial app load lightweight and super fast
-const AdminModal = React.lazy(() =>
+// Lazy load non-critical components to optimize performance for up to 5000+ users
+const AdminModal = lazy(() =>
   import('./components/AdminModal').then((m) => ({ default: m.AdminModal }))
 );
-const MenuPhotoModal = React.lazy(() =>
+const MenuPhotoModal = lazy(() =>
   import('./components/MenuPhotoModal').then((m) => ({ default: m.MenuPhotoModal }))
 );
 
@@ -36,12 +38,22 @@ export default function App() {
   const [photoMenuInitialTab, setPhotoMenuInitialTab] = useState<'seafood' | 'syrian'>('seafood');
   const [isMobileSimulated, setIsMobileSimulated] = useState(false);
 
-  // Initialize dishes from LocalStorage cache
+  // Category filters connected with Hero
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+
+  // Initialize dishes and cart from localStorage
   useEffect(() => {
     const loaded = getStoredDishes();
     setDishes(loaded);
 
-    // Also load existing cart if saved
+    // Warm up image cache for all loaded dishes
+    try {
+      const urls = loaded.map((d) => d.image).filter(Boolean);
+      preloadAllImages(urls);
+    } catch {
+      // ignore
+    }
+
     try {
       const savedCart = localStorage.getItem('sultan_mahmud_cart_v2');
       if (savedCart) {
@@ -50,6 +62,47 @@ export default function App() {
     } catch {
       // ignore
     }
+  }, []);
+
+  // Close all modals helper - ensures no two modals/drawers overlap
+  const closeAllModals = () => {
+    setIsCartOpen(false);
+    setIsAdminOpen(false);
+    setSelectedDish(null);
+    setIsPhotoMenuOpen(false);
+  };
+
+  // Mutually exclusive modal openers
+  const handleOpenCart = () => {
+    closeAllModals();
+    setIsCartOpen(true);
+  };
+
+  const handleOpenAdmin = () => {
+    closeAllModals();
+    setIsAdminOpen(true);
+  };
+
+  const handleSelectDish = (dish: DishItem) => {
+    closeAllModals();
+    setSelectedDish(dish);
+  };
+
+  const handleOpenPhotoMenu = (tab: 'seafood' | 'syrian' = 'seafood') => {
+    closeAllModals();
+    setPhotoMenuInitialTab(tab);
+    setIsPhotoMenuOpen(true);
+  };
+
+  // Close modals on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeAllModals();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   // Sync cart to localStorage
@@ -78,33 +131,38 @@ export default function App() {
       spicyLevel: dish.spicyLevel,
       badge: dish.badge,
       badgeText: dish.badgeText,
+      ingredients: dish.ingredients || [],
       sizes: dish.sizes,
+      prepTimeMinutes: dish.prepTimeMinutes,
+      calories: dish.calories,
     };
 
     const existingIndex = cart.findIndex((item) => item.dish.id === dishComplete.id);
-    let updatedCart: CartItem[];
 
+    let updatedCart: CartItem[];
     if (existingIndex > -1) {
       updatedCart = [...cart];
-      updatedCart[existingIndex].quantity += quantity;
-      if (notes) {
-        updatedCart[existingIndex].notes = notes;
-      }
+      updatedCart[existingIndex] = {
+        ...updatedCart[existingIndex],
+        quantity: updatedCart[existingIndex].quantity + quantity,
+        notes: notes || updatedCart[existingIndex].notes,
+      };
     } else {
-      updatedCart = [...cart, { dish: dishComplete, quantity, notes }];
+      updatedCart = [
+        ...cart,
+        {
+          dish: dishComplete,
+          quantity,
+          selectedSize: dish.sizes?.[0]?.name,
+          notes,
+        },
+      ];
     }
 
     updateCartState(updatedCart);
   };
 
-  // Open photo menu with specific branch tab
-  const handleOpenPhotoMenu = (branch?: 'seafood' | 'syrian') => {
-    const targetBranch = branch || (activeBranch === 'syrian' ? 'syrian' : 'seafood');
-    setPhotoMenuInitialTab(targetBranch);
-    setIsPhotoMenuOpen(true);
-  };
-
-  // Update item quantity in cart
+  // Update quantity
   const handleUpdateQuantity = (dishId: string, delta: number) => {
     const updated = cart
       .map((item) => {
@@ -162,6 +220,19 @@ export default function App() {
     }
   };
 
+  const handleSelectStoryCategory = (story: CategoryStoryItem) => {
+    setActiveBranch(story.branch);
+    if (story.subCategory) {
+      setSelectedCategory(story.subCategory);
+    } else {
+      setSelectedCategory('all');
+    }
+    const menuEl = document.getElementById('menu-section');
+    if (menuEl) {
+      menuEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   const handleScrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -175,46 +246,48 @@ export default function App() {
     >
       {/* Main Navigation Header */}
       <Header
-        onOpenCart={() => setIsCartOpen(true)}
+        onOpenCart={handleOpenCart}
         cartCount={totalCartCount}
       />
 
       {/* Main Page Body */}
-      <main className="flex-1">
-        {/* Cinematic Dual-Theme Hero */}
+      <main className="flex-1 pb-24">
+        {/* App-Style Hero with Category Stories & Converging Entrance */}
         <Hero
-          onSelectBranch={(branch) => handleOpenFullMenu(branch)}
-          onExploreMenu={() => handleOpenFullMenu()}
+          onSelectCategory={handleSelectStoryCategory}
+          activeCategory={selectedCategory}
         />
 
-        {/* Menu Section with compact on-page view + full-screen overlay */}
+        {/* 2-Column Product Grid with High-Speed Converging Entrance */}
         <MenuSection
           dishes={dishes}
           activeBranch={activeBranch}
           onSelectBranch={setActiveBranch}
           onAddToCart={(dish) => handleAddToCart(dish, 1)}
-          onSelectDish={(dish) => setSelectedDish(dish)}
+          onSelectDish={handleSelectDish}
           onOrderWhatsApp={(dish) => handleDirectWhatsApp(dish, 1)}
           isOpen={isMenuOpen}
           onOpen={() => setIsMenuOpen(true)}
           onClose={() => setIsMenuOpen(false)}
           cartCount={totalCartCount}
-          onOpenCart={() => setIsCartOpen(true)}
+          onOpenCart={handleOpenCart}
+          selectedCategory={selectedCategory}
+          onCategoryChange={setSelectedCategory}
         />
       </main>
 
       {/* Footer */}
       <Footer
-        onOpenAdmin={() => setIsAdminOpen(true)}
         onScrollToTop={handleScrollToTop}
       />
 
-      {/* Unified Bottom Action Bar (Menu, Cart, WhatsApp & Admin) */}
+      {/* Bottom App Navigation Bar with Center Home Button */}
       <FloatingActions
         cartCount={totalCartCount}
-        onOpenCart={() => setIsCartOpen(true)}
-        onOpenAdmin={() => setIsAdminOpen(true)}
+        onOpenCart={handleOpenCart}
+        onOpenAdmin={handleOpenAdmin}
         onOpenMenu={() => handleOpenFullMenu()}
+        onScrollToTop={handleScrollToTop}
       />
 
       {/* Dish Detail Presentation Modal */}

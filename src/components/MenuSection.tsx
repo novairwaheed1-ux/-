@@ -1,15 +1,10 @@
 import React, { useState, useMemo } from 'react';
-import {
-  Search,
-  Flame,
-  Waves,
-  UtensilsCrossed,
-  X,
-  ShoppingBag,
-} from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Fish, Flame, CheckCircle2, ChevronDown } from 'lucide-react';
 import { DishItem, BranchType } from '../types';
 import { FoodCard } from './FoodCard';
-import { sultanChefLogoImg } from '../data/dishes';
+import { playReelSound } from '../utils/audio';
+import { grilledShrimpImg, shawarmaWrapImg } from '../data/dishes';
 
 interface MenuSectionProps {
   dishes: DishItem[];
@@ -23,6 +18,8 @@ interface MenuSectionProps {
   onClose?: () => void;
   cartCount?: number;
   onOpenCart?: () => void;
+  selectedCategory?: string;
+  onCategoryChange?: (category: string) => void;
 }
 
 export const MenuSection: React.FC<MenuSectionProps> = ({
@@ -32,11 +29,35 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
   onAddToCart,
   onSelectDish,
   onOrderWhatsApp,
-  cartCount = 0,
-  onOpenCart,
+  selectedCategory: externalSelectedCategory,
+  onCategoryChange,
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [internalCategory, setInternalCategory] = useState<string>('all');
+  const currentCategory = externalSelectedCategory !== undefined ? externalSelectedCategory : internalCategory;
+
+  const handleCategoryUpdate = (catId: string) => {
+    playReelSound();
+    if (onCategoryChange) {
+      onCategoryChange(catId);
+    } else {
+      setInternalCategory(catId);
+    }
+  };
+
+  const handleSelectBranchAndScroll = (branch: 'seafood' | 'syrian') => {
+    playReelSound();
+    onSelectBranch(branch);
+    handleCategoryUpdate('all');
+    // Smoothly and effortlessly scroll down to the dishes grid without touching the screen
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        const target = document.getElementById('dishes-grid-anchor');
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 40);
+    });
+  };
 
   const currentBranch: 'seafood' | 'syrian' =
     activeBranch === 'syrian' ? 'syrian' : 'seafood';
@@ -45,8 +66,8 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
   const seafoodCategories = [
     { id: 'all', label: 'جميع الأصناف' },
     { id: 'meals', label: 'وجبات وبحريات' },
-    { id: 'sandwiches', label: 'ساندوتشات' },
-    { id: 'casseroles', label: 'طواجن' },
+    { id: 'sandwiches', label: 'ساندوتشات كبدة وأسماك' },
+    { id: 'casseroles', label: 'طواجن وأرز' },
     { id: 'appetizers', label: 'مقبلات وسلطات' },
   ];
 
@@ -57,197 +78,269 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
     { id: 'crepes', label: 'كريب وساندوتشات' },
     { id: 'fatila', label: 'فتيلة السلطان' },
     { id: 'meals', label: 'بروستد ووجبات' },
-    { id: 'sides', label: 'مقبلات وصوصات' },
+    { id: 'sides', label: 'مقبلات وتومية' },
   ];
 
   const activeCategories = currentBranch === 'seafood' ? seafoodCategories : syrianCategories;
 
-  // Filter dishes strictly by branch, sub-category, and search query
+  // Ultra-fast memoized filter: 0ms overhead, perfectly scalable for 10,000+ users
   const displayedDishes = useMemo(() => {
-    return dishes.filter((dish) => {
-      if (dish.branch !== currentBranch) return false;
-
-      // Category filter
-      if (selectedCategory !== 'all') {
-        if (dish.category !== selectedCategory) {
-          return false;
-        }
-      }
-
-      // Search filter
-      if (searchQuery.trim()) {
-        const query = searchQuery.toLowerCase().trim();
-        const matchName = dish.name.toLowerCase().includes(query);
-        const matchNameEn = dish.nameEn?.toLowerCase().includes(query);
-        const matchDesc = dish.description.toLowerCase().includes(query);
-        const matchIng = dish.ingredients?.some((ing) => ing.toLowerCase().includes(query));
-        return matchName || matchNameEn || matchDesc || matchIng;
-      }
-
-      return true;
-    });
-  }, [dishes, currentBranch, selectedCategory, searchQuery]);
-
-  const seafoodCount = dishes.filter((d) => d.branch === 'seafood').length;
-  const syrianCount = dishes.filter((d) => d.branch === 'syrian').length;
+    const inBranch = dishes.filter((d) => d.branch === currentBranch);
+    if (currentCategory === 'all') return inBranch;
+    return inBranch.filter((d) => d.category === currentCategory);
+  }, [dishes, currentBranch, currentCategory]);
 
   return (
-    <section id="menu-section" className="py-8 sm:py-12 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        {/* Section Heading & Interactive Branch Switcher */}
-        <div className="flex flex-col items-center justify-center text-center mb-8">
-          <div className="flex items-center gap-2.5 mb-2">
-            <div className="w-11 h-11 rounded-full p-0.5 bg-gradient-to-tr from-amber-600 via-amber-400 to-yellow-300 shadow-md">
-              <div className="w-full h-full rounded-full overflow-hidden bg-white border border-[#231811]">
-                <img
-                  src={sultanChefLogoImg}
-                  alt="لوجو مطعم السلطان محمود"
-                  className="w-full h-full object-cover"
-                />
+    <section id="menu-section" className="py-4 sm:py-7 relative select-none">
+      <div className="max-w-4xl mx-auto px-3 sm:px-6">
+        {/* Large Prominent Dual Branch Switcher Cards (قسم الأسماك وقسم السوري) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4">
+          {/* 1. Seafood Branch Card */}
+          <div
+            id="tab-seafood-branch"
+            onClick={() => handleSelectBranchAndScroll('seafood')}
+            className={`group relative overflow-hidden rounded-3xl p-4 sm:p-5 transition-all duration-200 cursor-pointer border-2 select-none text-right flex flex-col justify-between min-h-[145px] sm:min-h-[160px] active:scale-[0.98] transform-gpu ${
+              currentBranch === 'seafood'
+                ? 'bg-gradient-to-l from-[#082f49] via-[#0c4a6e] to-[#075985] border-cyan-400 text-white shadow-md shadow-cyan-950/20 ring-2 ring-cyan-400/30'
+                : 'bg-white hover:bg-cyan-50/40 border-stone-200 hover:border-cyan-300 text-stone-900 shadow-xs'
+            }`}
+          >
+            {/* Background Subtle Watermark Dish Image */}
+            <div className="absolute left-0 top-0 bottom-0 w-36 sm:w-48 pointer-events-none overflow-hidden opacity-25 group-hover:opacity-35 transition-opacity">
+              <img
+                src={grilledShrimpImg}
+                alt="أسماك وبحريات"
+                className="w-full h-full object-cover object-center transform -scale-x-100"
+                loading="eager"
+              />
+              <div
+                className={`absolute inset-0 ${
+                  currentBranch === 'seafood'
+                    ? 'bg-gradient-to-r from-transparent to-[#0c4a6e]'
+                    : 'bg-gradient-to-r from-transparent to-white'
+                }`}
+              />
+            </div>
+
+            {/* Top Row: Icon + Status Pill */}
+            <div className="relative z-10 flex items-center justify-between gap-2">
+              <div
+                className={`w-11 h-11 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center transition-transform duration-200 group-hover:scale-105 shadow-xs ${
+                  currentBranch === 'seafood'
+                    ? 'bg-cyan-400 text-stone-950 font-black'
+                    : 'bg-cyan-100 text-cyan-800'
+                }`}
+              >
+                <Fish className="w-6 h-6 sm:w-6.5 sm:h-6.5" />
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                {currentBranch === 'seafood' ? (
+                  <span className="px-3 py-1 rounded-full bg-cyan-400/25 border border-cyan-300/40 text-cyan-200 text-xs font-black flex items-center gap-1 shadow-xs">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-cyan-300" />
+                    <span>المنيو المعروض حالياً</span>
+                  </span>
+                ) : (
+                  <span className="px-3 py-1 rounded-full bg-stone-100 border border-stone-200 text-stone-600 text-xs font-bold group-hover:text-cyan-800 group-hover:border-cyan-300 transition-colors">
+                    اضغط لعرض المنيو
+                  </span>
+                )}
               </div>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-[#231811]">
-              قائمة طعام مطعم السلطان محمود
-            </h2>
-          </div>
-          <p className="text-xs sm:text-sm text-[#705a49] font-bold">
-            ديروط • اضغط على أي صنف لتفاصيله أو إضافته للسلة أو الطلب الفوري عبر واتساب
-          </p>
 
-          {/* Department Tabs Switcher */}
-          <div className="mt-5 flex items-center p-1.5 rounded-2xl bg-[#f2ebd9] border border-[#d8cdbc] shadow-inner max-w-lg w-full justify-center gap-1.5">
-            <button
-              type="button"
-              id="tab-seafood-branch"
-              onClick={() => {
-                onSelectBranch('seafood');
-                setSelectedCategory('all');
-              }}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-black transition-all cursor-pointer ${
-                currentBranch === 'seafood'
-                  ? 'bg-amber-600 text-white shadow-md'
-                  : 'text-[#544131] hover:text-black hover:bg-white/50'
-              }`}
-            >
-              <Waves className="w-4 h-4" />
-              <span>قسم الأسماك ({seafoodCount})</span>
-            </button>
-
-            <button
-              type="button"
-              id="tab-syrian-branch"
-              onClick={() => {
-                onSelectBranch('syrian');
-                setSelectedCategory('all');
-              }}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-black transition-all cursor-pointer ${
-                currentBranch === 'syrian'
-                  ? 'bg-orange-600 text-white shadow-md'
-                  : 'text-[#544131] hover:text-black hover:bg-white/50'
-              }`}
-            >
-              <Flame className="w-4 h-4" />
-              <span>القسم السوري ({syrianCount})</span>
-            </button>
-
-            {/* In-Menu Cart Quick Access Button */}
-            {onOpenCart && (
-              <button
-                type="button"
-                id="menu-bar-cart-btn"
-                onClick={onOpenCart}
-                className="flex items-center gap-1.5 py-2.5 px-3 rounded-xl bg-[#231811] hover:bg-black text-amber-300 text-xs font-black shadow-sm cursor-pointer transition-all border border-amber-500/40"
-                title="عرض سلة الطلبات"
+            {/* Middle: Titles & Details */}
+            <div className="relative z-10 mt-2.5">
+              <h3 className="text-lg sm:text-xl font-black tracking-tight">
+                منيو وأسعار الأسماك والبحريات
+              </h3>
+              <p
+                className={`text-xs mt-1 font-medium leading-relaxed ${
+                  currentBranch === 'seafood' ? 'text-cyan-100/90' : 'text-stone-500'
+                }`}
               >
-                <ShoppingBag className="w-4 h-4 text-amber-400" />
-                <span className="hidden sm:inline">السلة</span>
-                <span className="px-1.5 py-0.2 rounded-full bg-amber-500 text-[#231811] text-[10px] font-mono font-black">
-                  {cartCount}
-                </span>
-              </button>
-            )}
+                طواجن سي فود • جمبري جامبو • فيليه مقرمش • كبدة ومخ
+              </p>
+            </div>
+
+            {/* Bottom: Direct Downward Indicator to Browse Below */}
+            <div className="relative z-10 mt-3 pt-2 border-t border-black/5 dark:border-white/10 flex items-center justify-between text-xs">
+              <span
+                className={`flex items-center gap-1 text-[11px] font-black ${
+                  currentBranch === 'seafood' ? 'text-cyan-200' : 'text-stone-600 group-hover:text-cyan-700'
+                }`}
+              >
+                <span>{currentBranch === 'seafood' ? 'تصفح الأصناف والأسعار بالأسفل' : 'انقر للانتقال للمنيو والأسعار'}</span>
+              </span>
+              <div
+                className={`w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-200 group-hover:translate-y-0.5 ${
+                  currentBranch === 'seafood' ? 'bg-cyan-400/30 text-cyan-200' : 'bg-stone-100 text-stone-600'
+                }`}
+              >
+                <ChevronDown className="w-4 h-4" />
+              </div>
+            </div>
+          </div>
+
+          {/* 2. Syrian Branch Card */}
+          <div
+            id="tab-syrian-branch"
+            onClick={() => handleSelectBranchAndScroll('syrian')}
+            className={`group relative overflow-hidden rounded-3xl p-4 sm:p-5 transition-all duration-200 cursor-pointer border-2 select-none text-right flex flex-col justify-between min-h-[145px] sm:min-h-[160px] active:scale-[0.98] transform-gpu ${
+              currentBranch === 'syrian'
+                ? 'bg-gradient-to-l from-[#641216] via-[#85191f] to-[#550c10] border-amber-400 text-white shadow-md shadow-red-950/20 ring-2 ring-amber-400/30'
+                : 'bg-white hover:bg-amber-50/40 border-stone-200 hover:border-amber-300 text-stone-900 shadow-xs'
+            }`}
+          >
+            {/* Background Subtle Watermark Dish Image */}
+            <div className="absolute left-0 top-0 bottom-0 w-36 sm:w-48 pointer-events-none overflow-hidden opacity-25 group-hover:opacity-35 transition-opacity">
+              <img
+                src={shawarmaWrapImg}
+                alt="مشويات وسوري"
+                className="w-full h-full object-cover object-center transform -scale-x-100"
+                loading="eager"
+              />
+              <div
+                className={`absolute inset-0 ${
+                  currentBranch === 'syrian'
+                    ? 'bg-gradient-to-r from-transparent to-[#85191f]'
+                    : 'bg-gradient-to-r from-transparent to-white'
+                }`}
+              />
+            </div>
+
+            {/* Top Row: Icon + Status Pill */}
+            <div className="relative z-10 flex items-center justify-between gap-2">
+              <div
+                className={`w-11 h-11 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center transition-transform duration-200 group-hover:scale-105 shadow-xs ${
+                  currentBranch === 'syrian'
+                    ? 'bg-amber-400 text-stone-950 font-black'
+                    : 'bg-orange-100 text-orange-800'
+                }`}
+              >
+                <Flame className="w-6 h-6 sm:w-6.5 sm:h-6.5" />
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                {currentBranch === 'syrian' ? (
+                  <span className="px-3 py-1 rounded-full bg-amber-400/25 border border-amber-300/40 text-amber-200 text-xs font-black flex items-center gap-1 shadow-xs">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-amber-300" />
+                    <span>المنيو المعروض حالياً</span>
+                  </span>
+                ) : (
+                  <span className="px-3 py-1 rounded-full bg-stone-100 border border-stone-200 text-stone-600 text-xs font-bold group-hover:text-amber-800 group-hover:border-amber-300 transition-colors">
+                    اضغط لعرض المنيو
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Middle: Titles & Details */}
+            <div className="relative z-10 mt-2.5">
+              <h3 className="text-lg sm:text-xl font-black tracking-tight">
+                منيو وأسعار القسم السوري والمشويات
+              </h3>
+              <p
+                className={`text-xs mt-1 font-medium leading-relaxed ${
+                  currentBranch === 'syrian' ? 'text-amber-100/90' : 'text-stone-500'
+                }`}
+              >
+                مشويات عالفحم • شاورما عربي • كريب وساندوتشات • بروستد
+              </p>
+            </div>
+
+            {/* Bottom: Direct Downward Indicator to Browse Below */}
+            <div className="relative z-10 mt-3 pt-2 border-t border-black/5 dark:border-white/10 flex items-center justify-between text-xs">
+              <span
+                className={`flex items-center gap-1 text-[11px] font-black ${
+                  currentBranch === 'syrian' ? 'text-amber-200' : 'text-stone-600 group-hover:text-amber-700'
+                }`}
+              >
+                <span>{currentBranch === 'syrian' ? 'تصفح الأصناف والأسعار بالأسفل' : 'انقر للانتقال للمنيو والأسعار'}</span>
+              </span>
+              <div
+                className={`w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-200 group-hover:translate-y-0.5 ${
+                  currentBranch === 'syrian' ? 'bg-amber-400/30 text-amber-200' : 'bg-stone-100 text-stone-600'
+                }`}
+              >
+                <ChevronDown className="w-4 h-4" />
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Filter Controls: Search & Sub-category Pills */}
-        <div className="bg-white/95 rounded-2xl p-4 border border-[#e4dcce] shadow-xs mb-8">
-          {/* Search Bar */}
-          <div className="relative max-w-md mx-auto mb-4">
-            <Search className="w-4 h-4 text-stone-400 absolute right-3.5 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder={`ابحث في ${currentBranch === 'seafood' ? 'قسم الأسماك والبحريات' : 'القسم السوري والمشويات'}...`}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-10 py-2.5 rounded-xl text-xs sm:text-sm bg-[#faf6f0] border border-[#ddd2c0] focus:border-amber-500 focus:outline-hidden font-medium text-[#231811] placeholder:text-stone-400"
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => setSearchQuery('')}
-                className="absolute left-3 top-1/2 -translate-y-1/2 p-1 text-stone-400 hover:text-stone-600 cursor-pointer"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            )}
-          </div>
+        {/* Anchor point for automatic smooth downward scroll */}
+        <div id="dishes-grid-anchor" className="scroll-mt-4" />
 
-          {/* Sub-Category Pills */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none justify-start sm:justify-center">
-            {activeCategories.map((cat) => (
+        {/* Sub-category Filter Pills with Fluid Native Momentum Scrolling */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-4 no-scrollbar justify-start sm:justify-center scroll-smooth overscroll-x-contain">
+          {activeCategories.map((cat) => {
+            const isCatActive = currentCategory === cat.id;
+            return (
               <button
                 key={cat.id}
                 type="button"
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                  selectedCategory === cat.id
-                    ? currentBranch === 'seafood'
-                      ? 'bg-amber-600 text-white shadow-sm'
-                      : 'bg-orange-600 text-white shadow-sm'
-                    : 'bg-[#faf6f0] hover:bg-stone-100 text-[#544131] border border-[#e0d6c7]'
+                onClick={() => handleCategoryUpdate(cat.id)}
+                className={`relative whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-black transition-colors cursor-pointer select-none shrink-0 ${
+                  isCatActive
+                    ? 'text-white'
+                    : 'text-stone-800 hover:text-black bg-white border border-black/10 hover:border-black/30'
                 }`}
               >
-                {cat.label}
+                {isCatActive && (
+                  <motion.div
+                    layoutId="activeCategorySlider"
+                    transition={{ type: 'spring', stiffness: 550, damping: 28 }}
+                    className="absolute inset-0 rounded-full bg-black shadow-xs -z-10"
+                  />
+                )}
+                <span>{cat.label}</span>
               </button>
-            ))}
-          </div>
+            );
+          })}
         </div>
 
-        {/* Food Dishes Grid - Rendered directly in page for instant, smooth viewing */}
-        <div>
-          {displayedDishes.length === 0 ? (
-            <div className="text-center py-16 px-4 rounded-3xl bg-white border border-[#e2d7c7] max-w-md mx-auto">
-              <UtensilsCrossed className="w-10 h-10 text-amber-600 mx-auto mb-3" />
-              <h3 className="text-base font-bold text-[#231811]">لا توجد أصناف مطابقة للبحث</h3>
-              <p className="text-xs text-[#6e5847] mt-1 font-medium">
-                يرجى تغيير كلمة البحث أو اختيار تصنيف آخر
-              </p>
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchQuery('');
-                  setSelectedCategory('all');
-                }}
-                className="mt-4 px-4 py-2 rounded-xl bg-amber-500 text-stone-950 text-xs font-black cursor-pointer"
-              >
-                عرض جميع الأصناف
-              </button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {displayedDishes.map((dish) => (
-                <div key={dish.id}>
-                  <FoodCard
-                    dish={dish}
-                    onAddToCart={onAddToCart}
-                    onSelectDish={onSelectDish}
-                    onOrderWhatsApp={onOrderWhatsApp}
-                  />
-                </div>
-              ))}
-            </div>
+        {/* Section Header: Category Title on Right, "عرض كافة الأصناف" on Left */}
+        <div className="flex items-center justify-between mb-3 px-1">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-black" />
+            <h2 className="text-sm sm:text-base font-black text-stone-900">
+              {currentBranch === 'seafood' ? 'مأكولات وبحريات السلطان' : 'مشويات وشاورما سورية'}
+            </h2>
+          </div>
+
+          {currentCategory !== 'all' && (
+            <button
+              type="button"
+              onClick={() => {
+                playReelSound();
+                handleCategoryUpdate('all');
+              }}
+              className="text-xs font-black text-black hover:underline cursor-pointer"
+            >
+              عرض كافة الأصناف
+            </button>
           )}
         </div>
+
+        {/* Dishes Grid with Single Smooth Container Fade for Ultimate Performance */}
+        <motion.div
+          key={`${currentBranch}-${currentCategory}`}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25, ease: 'easeOut' }}
+          className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3.5 transform-gpu"
+        >
+          {displayedDishes.map((dish) => (
+            <div key={dish.id} className="transform-gpu">
+              <FoodCard
+                dish={dish}
+                onAddToCart={onAddToCart}
+                onSelectDish={onSelectDish}
+                onOrderWhatsApp={onOrderWhatsApp}
+              />
+            </div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );

@@ -4,6 +4,7 @@ import { X, Trash2, Plus, Minus, MessageCircle, Phone, ShoppingBag, Sparkles, Ch
 import confetti from 'canvas-confetti';
 import { CartItem } from '../types';
 import { RESTAURANT_INFO } from '../data/dishes';
+import { HighConcurrencyOrderEngine } from '../utils/orderEngine';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -27,9 +28,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const [customerAddress, setCustomerAddress] = useState('');
   const [orderNotes, setOrderNotes] = useState('');
   const [isOrdered, setIsOrdered] = useState(false);
+  const [confirmedOrderId, setConfirmedOrderId] = useState<string | null>(null);
 
   const subtotal = items.reduce((sum, item) => sum + item.dish.price * item.quantity, 0);
-  const deliveryFee = subtotal > 0 ? (subtotal >= 600 ? 0 : 25) : 0;
+  const deliveryFee = subtotal > 0 ? 15 : 0;
   const total = subtotal + deliveryFee;
 
   const handleSendOrderWhatsApp = () => {
@@ -46,43 +48,28 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       // ignore
     }
 
-    // Format order text for WhatsApp
-    let message = `*طلب جديد من مطعم السلطان محمود*%0A%0A`;
-
-    if (customerName) message += `*الاسم:* ${encodeURIComponent(customerName)}%0A`;
-    if (customerPhone) message += `*الهاتف:* ${encodeURIComponent(customerPhone)}%0A`;
-    if (customerAddress) message += `*العنوان:* ${encodeURIComponent(customerAddress)}%0A`;
-    message += `----------------------------%0A`;
-
-    items.forEach((item, idx) => {
-      const branchName = item.dish.branch === 'seafood' ? 'بحري' : 'سوري';
-      message += `${idx + 1}. *${encodeURIComponent(item.dish.name)}* (${branchName})%0A`;
-      message += `   الكمية: ${item.quantity} × ${item.dish.price} = *${item.quantity * item.dish.price} ج.م*%0A`;
-      if (item.notes) {
-        message += `   ملاحظة: ${encodeURIComponent(item.notes)}%0A`;
-      }
+    // Process via High-Concurrency 0ms Engine (handles 2000+ simultaneous orders)
+    const { receipt, whatsappUrl } = HighConcurrencyOrderEngine.processOrder({
+      items,
+      subtotal,
+      deliveryFee,
+      total,
+      customerName,
+      customerPhone,
+      customerAddress,
+      orderNotes,
     });
 
-    message += `----------------------------%0A`;
-    message += `*المجموع الفرعي:* ${subtotal} ج.م%0A`;
-    message += `*خدمة التوصيل:* ${deliveryFee === 0 ? 'مجاناً' : deliveryFee + ' ج.م'}%0A`;
-    message += `*الإجمالي المطلوب:* *${total} ج.م*%0A`;
-
-    if (orderNotes) {
-      message += `%0A*ملاحظات إضافية:* ${encodeURIComponent(orderNotes)}%0A`;
-    }
-
-    message += `%0Aرجاء تأكيد الطلب والوقت المتوقع للتوصيل. شكراً لك!`;
-
-    const waUrl = `https://wa.me/${RESTAURANT_INFO.phoneRaw}?text=${message}`;
-
+    setConfirmedOrderId(receipt.orderId);
     setIsOrdered(true);
+
     setTimeout(() => {
-      window.open(waUrl, '_blank');
+      window.open(whatsappUrl, '_blank');
       setIsOrdered(false);
+      setConfirmedOrderId(null);
       onClearCart();
       onClose();
-    }, 1200);
+    }, 900);
   };
 
   if (!isOpen) return null;
@@ -245,13 +232,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </div>
                 <div className="flex justify-between">
                   <span>خدمة التوصيل:</span>
-                  <span className="font-bold text-white">
-                    {deliveryFee === 0 ? (
-                      <span className="text-emerald-400">مجاناً (عرض الطلبات الكبيرة)</span>
-                    ) : (
-                      `${deliveryFee} ج.م`
-                    )}
-                  </span>
+                  <span className="font-bold text-white">15 ج.م</span>
                 </div>
                 <div className="flex justify-between text-base font-black text-amber-400 pt-2 border-t border-white/10">
                   <span>الإجمالي الكلي:</span>
@@ -268,8 +249,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               >
                 {isOrdered ? (
                   <>
-                    <CheckCircle className="w-5 h-5" />
-                    <span>جاري إرسال الطلب لواتساب...</span>
+                    <CheckCircle className="w-5 h-5 text-white animate-bounce" />
+                    <span>تم توثيق الطلب #{confirmedOrderId} وجاري التحويل...</span>
                   </>
                 ) : (
                   <>

@@ -1,74 +1,70 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { sultanChefLogoImg } from '../data/dishes';
-import { ShoppingBag } from 'lucide-react';
+import { sultanChefLogoImg, sultanRestaurantCoverImg } from '../data/dishes';
+import { MapPin } from 'lucide-react';
+import { playReelSound } from '../utils/audio';
 
 interface HeaderProps {
   onOpenCart?: () => void;
   cartCount?: number;
 }
 
-export const Header: React.FC<HeaderProps> = ({
-  onOpenCart,
-  cartCount = 0,
-}) => {
+export const Header: React.FC<HeaderProps> = () => {
   return (
-    <header className="relative bg-[#faf6f0] border-b border-[#e6ded2] py-2.5 sm:py-3 transition-colors sticky top-0 z-30 shadow-xs backdrop-blur-md bg-[#faf6f0]/95">
-      <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
-        {/* Placeholder to balance layout */}
-        <div className="w-10 sm:w-16 hidden sm:block" />
+    <header className="relative w-full select-none overflow-hidden bg-stone-950 border-b border-white/10 shadow-sm">
+      {/* 1. Official Restaurant Page Cover Photo as Background */}
+      <div className="relative w-full h-32 sm:h-44 md:h-52 overflow-hidden">
+        <img
+          src={sultanRestaurantCoverImg}
+          alt="غلاف صفحة مطعم السلطان محمود"
+          loading="eager"
+          decoding="async"
+          referrerPolicy="no-referrer"
+          className="w-full h-full object-cover object-center transform scale-102 filter brightness-95"
+        />
+        {/* Subtle Luxury Dark Gradient Vignette for Perfect Contrast */}
+        <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-black/45 to-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/50" />
+      </div>
 
-        {/* Center: Restaurant Brand Crest */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-          className="flex items-center gap-2.5 select-none mx-auto sm:mx-0"
-        >
-          {/* Brand Crest Logo */}
-          <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full p-0.5 bg-gradient-to-tr from-amber-600 via-amber-400 to-yellow-300 shadow-md shadow-amber-950/20">
-            <div className="relative w-full h-full rounded-full overflow-hidden bg-white border-2 border-[#231811]">
+      {/* 2. Restaurant Profile & Identity Details */}
+      <div className="relative max-w-4xl mx-auto px-3.5 sm:px-6 -mt-10 sm:-mt-14 pb-3 flex items-end justify-between gap-3">
+        <div className="flex items-end gap-3 sm:gap-4">
+          {/* Circular Restaurant Logo Avatar with Golden Royal Ring */}
+          <motion.div
+            initial={{ scale: 0.92, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            onClick={() => {
+              playReelSound();
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="relative w-19 h-19 sm:w-24 sm:h-24 rounded-full p-1 bg-gradient-to-tr from-amber-500 via-amber-300 to-amber-600 shadow-xl cursor-pointer shrink-0 group transform-gpu"
+          >
+            <div className="w-full h-full rounded-full overflow-hidden bg-white border-2 border-stone-900 shadow-inner">
               <img
                 src={sultanChefLogoImg}
-                alt="شعار مطعم السلطان محمود الرسمي"
+                alt="شعار مطعم السلطان محمود"
                 referrerPolicy="no-referrer"
-                className="w-full h-full object-cover rounded-full"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 loading="eager"
               />
             </div>
-          </div>
+          </motion.div>
 
-          <div className="text-right">
-            <h1 className="text-base sm:text-xl font-black tracking-tight text-[#22170f] flex items-center gap-1">
-              <span>مطعم</span>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-700 via-amber-600 to-orange-600">
-                السلطان محمود
-              </span>
+          {/* Name & Location */}
+          <div className="pb-1 text-right">
+            <h1 className="text-base sm:text-2xl font-black text-white tracking-tight drop-shadow-md">
+              مطعم السلطان محمود
             </h1>
-            <p className="text-[9px] sm:text-[11px] text-[#755d4a] font-bold">
-              ديروط • بحريات ومشويات وشاورما
+            <p className="text-[11px] sm:text-xs text-stone-300 font-bold mt-0.5 flex items-center gap-1 drop-shadow-sm">
+              <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              <span>ديروط • أسماك طازجة & مشويات سورية</span>
             </p>
           </div>
-        </motion.div>
-
-        {/* Right Side: Cart quick trigger (Shows ONLY order count number) */}
-        {onOpenCart ? (
-          <button
-            onClick={onOpenCart}
-            className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black transition-all cursor-pointer shadow-xs ${
-              cartCount > 0
-                ? 'bg-amber-500 text-stone-950 font-black shadow-md shadow-amber-500/30'
-                : 'bg-stone-200/80 hover:bg-stone-300/80 text-stone-700'
-            }`}
-            title="سلة الطلبات"
-          >
-            <ShoppingBag className="w-3.5 h-3.5" />
-            <span className="font-mono text-xs">{cartCount}</span>
-          </button>
-        ) : (
-          <div className="w-10 sm:w-16 hidden sm:block" />
-        )}
+        </div>
       </div>
     </header>
   );
 };
+

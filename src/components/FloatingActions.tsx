@@ -1,13 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { BookOpen, MessageCircle, Lock, ShoppingBag } from 'lucide-react';
-import { RESTAURANT_INFO } from '../data/dishes';
+import React from 'react';
+import { motion } from 'motion/react';
+import {
+  Home,
+  UtensilsCrossed,
+  ShoppingBag,
+  SlidersHorizontal,
+  MessageCircle,
+} from 'lucide-react';
+import { playReelSound } from '../utils/audio';
 
 interface FloatingActionsProps {
   cartCount: number;
   onOpenCart: () => void;
   onOpenAdmin: () => void;
   onOpenMenu: () => void;
+  onScrollToTop?: () => void;
 }
 
 export const FloatingActions: React.FC<FloatingActionsProps> = ({
@@ -15,94 +22,132 @@ export const FloatingActions: React.FC<FloatingActionsProps> = ({
   onOpenCart,
   onOpenAdmin,
   onOpenMenu,
+  onScrollToTop,
 }) => {
-  const [badgeBump, setBadgeBump] = useState(false);
-
-  // Trigger bounce animation on cart icon & badge whenever cartCount changes and > 0
-  useEffect(() => {
-    if (cartCount > 0) {
-      setBadgeBump(true);
-      const timer = setTimeout(() => setBadgeBump(false), 600);
-      return () => clearTimeout(timer);
+  const handleHomeClick = () => {
+    playReelSound();
+    if (onScrollToTop) {
+      onScrollToTop();
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [cartCount]);
+  };
+
+  const handleMenuClick = () => {
+    playReelSound();
+    onOpenMenu();
+  };
+
+  const handleCartClick = () => {
+    playReelSound();
+    onOpenCart();
+  };
+
+  const handleAdminClick = () => {
+    playReelSound();
+    onOpenAdmin();
+  };
 
   return (
-    <div className="fixed bottom-3 sm:bottom-6 inset-x-0 z-40 flex justify-center px-3 pointer-events-none">
+    <div className="fixed bottom-0 inset-x-0 z-40 flex justify-center pb-[max(0.5rem,env(safe-area-inset-bottom))] px-3 pointer-events-none select-none">
       <motion.nav
-        initial={{ y: 80, opacity: 0 }}
+        initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ type: 'spring', stiffness: 280, damping: 24 }}
-        className="pointer-events-auto flex items-center gap-2 sm:gap-3 px-3.5 py-2 sm:px-4 sm:py-2 rounded-full bg-[#1b140f]/95 text-white border border-amber-500/40 shadow-2xl backdrop-blur-xl max-w-fit"
+        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+        className="pointer-events-auto relative flex items-center justify-between w-full max-w-lg px-3 py-1.5 rounded-3xl bg-white text-stone-800 border border-black/10 shadow-[0_8px_30px_rgba(0,0,0,0.1)] transform-gpu"
       >
-        {/* 1. Open Menu Button */}
+        {/* 1. Menu / المطبخ */}
         <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          id="bottom-open-menu-btn"
-          onClick={onOpenMenu}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 text-stone-950 text-xs font-black shadow-lg cursor-pointer transition-all shrink-0"
-          title="فتح قائمة الطعام الكاملة"
+          whileTap={{ scale: 0.94 }}
+          id="nav-kitchen-btn"
+          type="button"
+          onClick={handleMenuClick}
+          className="flex-1 flex flex-col items-center justify-center py-1 text-stone-700 hover:text-black transition-colors cursor-pointer group"
+          title="قائمة الطعام"
         >
-          <BookOpen className="w-4 h-4" />
-          <span>تصفح المنيو</span>
-        </motion.button>
-
-        {/* 2. Persistent Cart Button - Shows ONLY order count & animated badge */}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          animate={badgeBump ? { scale: [1, 1.2, 0.95, 1.08, 1] } : { scale: 1 }}
-          transition={{ duration: 0.45, ease: 'easeInOut' }}
-          id="bottom-cart-btn"
-          onClick={onOpenCart}
-          className={`relative flex items-center gap-1.5 px-3.5 py-2 rounded-full transition-all cursor-pointer shrink-0 ${
-            cartCount > 0
-              ? 'bg-amber-500 text-stone-950 font-black shadow-lg shadow-amber-500/40 border border-amber-400'
-              : 'bg-white/5 hover:bg-white/10 text-stone-300'
-          }`}
-          title="عرض سلة الطلبات"
-        >
-          <motion.div
-            animate={badgeBump ? { rotate: [0, -14, 14, -8, 0] } : { rotate: 0 }}
-            transition={{ duration: 0.45, ease: 'easeInOut' }}
-          >
-            <ShoppingBag className="w-4 h-4" />
-          </motion.div>
-
-          {/* Number of orders ONLY */}
-          <span className="text-xs font-black font-mono min-w-[16px] text-center">
-            {cartCount}
+          <UtensilsCrossed className="w-5 h-5 text-stone-700 group-hover:text-black transition-transform" />
+          <span className="text-[10px] font-black mt-0.5 text-stone-700 group-hover:text-black">
+            المطبخ
           </span>
         </motion.button>
 
-        {/* 3. WhatsApp Direct */}
+        {/* 2. Cart / السلة */}
+        <motion.button
+          whileTap={{ scale: 0.94 }}
+          id="nav-cart-btn"
+          type="button"
+          onClick={handleCartClick}
+          className="relative flex-1 flex flex-col items-center justify-center py-1 text-stone-700 hover:text-black transition-colors cursor-pointer group"
+          title="سلة الطلبات"
+        >
+          <div className="relative">
+            <ShoppingBag className="w-5 h-5 text-stone-700 group-hover:text-black transition-transform" />
+            {cartCount > 0 && (
+              <span className="absolute -top-1.5 -right-2 min-w-[17px] h-4 px-1 rounded-full bg-black text-white text-[9px] font-black font-mono flex items-center justify-center border border-white shadow-xs">
+                {cartCount}
+              </span>
+            )}
+          </div>
+          <span className="text-[10px] font-black mt-0.5 text-stone-700 group-hover:text-black">
+            السلة
+          </span>
+        </motion.button>
+
+        {/* 3. CENTER: الرئيسية (Home) Elevated Circle */}
+        <div className="relative -mt-6 flex flex-col items-center justify-center px-2">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.92 }}
+            id="nav-center-home-btn"
+            type="button"
+            onClick={handleHomeClick}
+            className="w-13 h-13 rounded-full bg-gradient-to-tr from-stone-900 via-black to-stone-900 text-white flex items-center justify-center shadow-[0_6px_20px_rgba(0,0,0,0.3)] border-3 border-white cursor-pointer select-none transition-transform"
+            title="الرئيسية"
+          >
+            <Home className="w-6 h-6 text-white" />
+          </motion.button>
+          <span className="text-[10px] font-black mt-0.5 text-black">
+            الرئيسية
+          </span>
+        </div>
+
+        {/* 4. Large Prominent Admin Panel / لوحة الإدارة */}
+        <motion.button
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.94 }}
+          id="nav-admin-btn"
+          type="button"
+          onClick={handleAdminClick}
+          className="flex-1 flex flex-col items-center justify-center py-1 px-1 rounded-2xl bg-stone-900 hover:bg-black text-white border border-stone-800 transition-all cursor-pointer group shadow-xs"
+          title="لوحة إدارة المطعم"
+        >
+          <div className="relative">
+            <SlidersHorizontal className="w-4.5 h-4.5 text-amber-400 group-hover:text-amber-300 transition-transform" />
+            <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-amber-400" />
+          </div>
+          <span className="text-[10px] font-black mt-0.5 text-amber-400 group-hover:text-amber-300">
+            لوحة الإدارة
+          </span>
+        </motion.button>
+
+        {/* 5. Direct WhatsApp / تواصل واتساب */}
         <motion.a
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          id="bottom-wa-btn"
-          href={RESTAURANT_INFO.whatsappLink}
+          whileTap={{ scale: 0.94 }}
+          id="nav-whatsapp-btn"
+          href="https://wa.me/201097828052"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-emerald-600/90 hover:bg-emerald-500 text-white text-xs font-bold transition-all cursor-pointer shrink-0"
-          title="محادثة واتساب مباشرة"
+          onClick={() => playReelSound()}
+          className="flex-1 flex flex-col items-center justify-center py-1 text-emerald-600 hover:text-emerald-700 transition-colors cursor-pointer group"
+          title="طلب واتساب فوري"
         >
-          <MessageCircle className="w-4 h-4" />
-          <span className="hidden sm:inline">واتساب</span>
+          <MessageCircle className="w-5 h-5 text-emerald-600 group-hover:text-emerald-700 transition-transform" />
+          <span className="text-[10px] font-black mt-0.5 text-emerald-600 group-hover:text-emerald-700">
+            واتساب
+          </span>
         </motion.a>
-
-        {/* 4. Minimalist Admin Lock Icon */}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          id="bottom-admin-btn"
-          onClick={onOpenAdmin}
-          className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-stone-400 hover:text-amber-300 transition-colors cursor-pointer shrink-0"
-          title="تسجيل دخول الإدارة ولوحة التحكم"
-        >
-          <Lock className="w-3.5 h-3.5" />
-        </motion.button>
       </motion.nav>
     </div>
+
   );
 };

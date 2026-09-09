@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ZoomIn, ZoomOut, RotateCcw, MessageCircle, Phone, Waves, Flame, ShoppingBag, Check, ChevronRight, ChevronLeft } from 'lucide-react';
+import { X, ZoomIn, ZoomOut, RotateCcw, MessageCircle, Phone, Fish, Flame, ShoppingBag, Check, ChevronRight, ChevronLeft } from 'lucide-react';
 import {
   seafoodMenuBoardImg,
   syrianMenuBoardImg,
@@ -217,7 +217,7 @@ export const MenuPhotoModal: React.FC<MenuPhotoModalProps> = ({
                 }`}
               >
                 {board.branch === 'seafood' ? (
-                  <Waves className="w-3.5 h-3.5" />
+                  <Fish className="w-3.5 h-3.5" />
                 ) : (
                   <Flame className="w-3.5 h-3.5" />
                 )}
