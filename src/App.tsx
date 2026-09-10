@@ -45,6 +45,39 @@ export default function App() {
   // Category filters connected with Hero
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
+  // Automatically detect and follow user's mobile / browser system theme (Light / Dark)
+  // Operates fully automatically without any manual buttons or clutter as requested
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+    const applyTheme = (e: MediaQueryListEvent | MediaQueryList) => {
+      const isDark = e.matches;
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+        document.documentElement.style.colorScheme = 'dark';
+        const meta = document.getElementById('meta-theme-color');
+        if (meta) meta.setAttribute('content', '#0c0a09');
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.style.colorScheme = 'light';
+        const meta = document.getElementById('meta-theme-color');
+        if (meta) meta.setAttribute('content', '#ffffff');
+      }
+    };
+
+    applyTheme(mediaQuery);
+
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', applyTheme);
+      return () => mediaQuery.removeEventListener('change', applyTheme);
+    } else {
+      mediaQuery.addListener(applyTheme);
+      return () => mediaQuery.removeListener(applyTheme);
+    }
+  }, []);
+
   // Initialize dishes and cart from localStorage
   useEffect(() => {
     const loaded = getStoredDishes();

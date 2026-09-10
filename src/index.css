@@ -1,16 +1,31 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   * {
     font-family: 'Almarai', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans Arabic', sans-serif;
   }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  html:not(.dark) {
+    color-scheme: light;
+  }
 }
 
-/* Crisp Modern White Luxury Canvas with Subtle Minimalist Accents */
+/* Crisp Modern Luxury Canvas (White in light mode, deep obsidian in dark mode) */
 .bg-sandy-luxury,
 .bg-white-luxury {
   background-color: #ffffff;
   background-image: none;
+}
+
+html.dark .bg-sandy-luxury,
+html.dark .bg-white-luxury {
+  background-color: #0c0a09;
 }
 
 /* Ambient Subtle Texture */
@@ -97,7 +112,7 @@ html, body {
   border-color: #d1ded0;
 }
 
-/* Custom smooth scrollbar in warm sandy bronze */
+/* Custom smooth scrollbar in warm sandy bronze / dark stone */
 ::-webkit-scrollbar {
   width: 9px;
   height: 9px;
@@ -112,4 +127,15 @@ html, body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #b39f88;
+}
+
+html.dark ::-webkit-scrollbar-track {
+  background: #1c1917;
+}
+html.dark ::-webkit-scrollbar-thumb {
+  background: #44403c;
+  border: 2px solid #1c1917;
+}
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #57534e;
 }

@@ -52,7 +52,7 @@ export const FoodCard: React.FC<FoodCardProps> = ({
       onClick={() => onSelectDish(dish)}
     >
       {/* Luxury Clean Card Shell */}
-      <div className="relative flex flex-col h-full rounded-3xl p-3 sm:p-3.5 border border-black/[0.08] hover:border-black/20 bg-white shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.06)] transition-all duration-200">
+      <div className="relative flex flex-col h-full rounded-3xl p-3 sm:p-3.5 border border-black/[0.08] dark:border-white/10 hover:border-black/20 dark:hover:border-white/20 bg-white dark:bg-stone-900 shadow-[0_2px_8px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.4)] transition-all duration-200">
         {/* Top Badges if any */}
         {dish.badge && (
           <div className="flex items-center justify-end z-10 mb-1">
@@ -64,14 +64,14 @@ export const FoodCard: React.FC<FoodCardProps> = ({
             )}
 
             {dish.badge === 'signature' && (
-              <span className="flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[9px] font-black bg-black text-white shadow-2xs">
-                <Sparkles className="w-2.5 h-2.5 text-amber-300" />
+              <span className="flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[9px] font-black bg-black dark:bg-amber-400 text-white dark:text-stone-950 shadow-2xs">
+                <Sparkles className="w-2.5 h-2.5 text-amber-300 dark:text-stone-950" />
                 <span>{dish.badgeText || 'توقيع السلطان'}</span>
               </span>
             )}
 
             {dish.badge === 'hot' && (
-              <span className="flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[9px] font-black bg-red-50 text-red-600 border border-red-200">
+              <span className="flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[9px] font-black bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/50">
                 <Flame className="w-2.5 h-2.5" />
                 <span>{dish.badgeText || 'حار'}</span>
               </span>
@@ -82,7 +82,7 @@ export const FoodCard: React.FC<FoodCardProps> = ({
         {/* Circular / Rounded Plate Stage with Lightweight Popout */}
         <div className="food-popout-stage relative w-full h-32 sm:h-38 flex items-center justify-center my-1 z-10">
           {/* Circular textured dark plate container */}
-          <div className="absolute w-26 h-26 sm:w-32 sm:h-32 rounded-full bg-gradient-to-tr from-[#1b140f] to-[#302219] border border-stone-200/50 shadow-inner group-hover:scale-102 transition-transform duration-200" />
+          <div className="absolute w-26 h-26 sm:w-32 sm:h-32 rounded-full bg-gradient-to-tr from-[#1b140f] to-[#302219] border border-stone-200/50 dark:border-white/10 shadow-inner group-hover:scale-102 transition-transform duration-200" />
 
           {/* Food Image: Hardware-accelerated with zero JS animation overhead */}
           <div className="food-image-popout relative w-28 h-28 sm:w-34 sm:h-34 flex items-center justify-center pointer-events-none transform-gpu">
@@ -99,11 +99,11 @@ export const FoodCard: React.FC<FoodCardProps> = ({
 
         {/* Content Details */}
         <div className="flex flex-col flex-1 z-10 mt-1">
-          <h3 className="text-xs sm:text-sm font-black text-stone-900 tracking-tight hover:text-[#881a20] transition-colors line-clamp-1">
+          <h3 className="text-xs sm:text-sm font-black text-stone-900 dark:text-stone-100 tracking-tight hover:text-[#881a20] dark:hover:text-amber-400 transition-colors line-clamp-1">
             {dish.name}
           </h3>
 
-          <p className="text-[10px] sm:text-[11px] text-stone-500 mt-0.5 line-clamp-1 leading-snug font-medium">
+          <p className="text-[10px] sm:text-[11px] text-stone-500 dark:text-stone-400 mt-0.5 line-clamp-1 leading-snug font-medium">
             {dish.description}
           </p>
 
@@ -121,8 +121,8 @@ export const FoodCard: React.FC<FoodCardProps> = ({
                   }}
                   className={`px-1.5 py-0.5 rounded-md text-[9px] font-black transition-all cursor-pointer ${
                     selectedSizeIndex === idx
-                      ? 'bg-black text-white'
-                      : 'bg-stone-100 hover:bg-stone-200 text-stone-700'
+                      ? 'bg-black dark:bg-amber-400 text-white dark:text-stone-950'
+                      : 'bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300'
                   }`}
                 >
                   {s.name} ({s.price} ج.م)
@@ -132,15 +132,15 @@ export const FoodCard: React.FC<FoodCardProps> = ({
           )}
 
           {/* Pricing & Add to Cart Action */}
-          <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-stone-100 gap-2">
+          <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-stone-100 dark:border-stone-800 gap-2">
             {/* Price Display */}
             <div className="flex items-baseline gap-1 text-right">
-              <span className="font-mono text-sm font-black text-stone-900">
+              <span className="font-mono text-sm font-black text-stone-900 dark:text-stone-100">
                 {activePrice}
               </span>
-              <span className="text-[10px] font-bold text-stone-500">ج.م</span>
+              <span className="text-[10px] font-bold text-stone-500 dark:text-stone-400">ج.م</span>
               {dish.originalPrice && dish.originalPrice > activePrice && (
-                <span className="text-[10px] text-stone-400 line-through mr-1 font-mono">
+                <span className="text-[10px] text-stone-400 dark:text-stone-500 line-through mr-1 font-mono">
                   {dish.originalPrice}
                 </span>
               )}
@@ -154,7 +154,7 @@ export const FoodCard: React.FC<FoodCardProps> = ({
               className={`flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-black transition-all shadow-xs cursor-pointer select-none active:scale-95 ${
                 isAddedAnim
                   ? 'bg-emerald-600 text-white'
-                  : 'bg-stone-900 hover:bg-black text-white'
+                  : 'bg-stone-900 hover:bg-black dark:bg-amber-400 dark:hover:bg-amber-300 text-white dark:text-stone-950'
               }`}
             >
               {isAddedAnim ? (

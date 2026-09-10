@@ -111,11 +111,11 @@ export const CategoryStories: React.FC<CategoryStoriesProps> = ({
                 <div
                   className={`w-15 h-15 sm:w-17 sm:h-17 rounded-full p-[2px] transition-all duration-200 ${
                     isActive
-                      ? 'bg-black shadow-xs'
-                      : 'bg-stone-200 group-hover:bg-black/40'
+                      ? 'bg-black dark:bg-amber-400 shadow-xs'
+                      : 'bg-stone-200 dark:bg-stone-800 group-hover:bg-black/40 dark:group-hover:bg-amber-400/50'
                   }`}
                 >
-                  <div className="w-full h-full rounded-full overflow-hidden bg-white border border-white shadow-2xs">
+                  <div className="w-full h-full rounded-full overflow-hidden bg-white dark:bg-stone-900 border border-white dark:border-stone-800 shadow-2xs">
                     <img
                       src={cat.image}
                       alt={cat.name}
@@ -128,7 +128,7 @@ export const CategoryStories: React.FC<CategoryStoriesProps> = ({
 
                 {/* Micro badge on top of circle if applicable */}
                 {cat.badge && (
-                  <span className="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full bg-black text-white text-[9px] font-black shadow-xs border border-white">
+                  <span className="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full bg-black dark:bg-amber-400 text-white dark:text-stone-950 text-[9px] font-black shadow-xs border border-white dark:border-stone-900">
                     {cat.badge}
                   </span>
                 )}
@@ -138,8 +138,8 @@ export const CategoryStories: React.FC<CategoryStoriesProps> = ({
               <span
                 className={`mt-1.5 text-xs font-black tracking-tight text-center whitespace-nowrap transition-colors ${
                   isActive
-                    ? 'text-black font-black'
-                    : 'text-stone-600 group-hover:text-black'
+                    ? 'text-black dark:text-amber-400 font-black'
+                    : 'text-stone-600 dark:text-stone-400 group-hover:text-black dark:group-hover:text-stone-200'
                 }`}
               >
                 {cat.name}
