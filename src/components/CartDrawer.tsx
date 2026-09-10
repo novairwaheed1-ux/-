@@ -90,9 +90,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           {/* Header */}
           <div className="p-4 sm:p-5 border-b border-[#2e2217] flex items-center justify-between bg-[#18120d]">
             <div className="flex items-center gap-2">
-              <ShoppingBag className="w-5 h-5 text-amber-400" />
+              <ShoppingBag className="w-5 h-5 text-rose-400" />
               <h2 className="text-lg font-black text-white">سلة الطلبات</h2>
-              <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold">
+              <span className="px-2 py-0.5 rounded-full bg-rose-950/60 text-rose-200 border border-rose-800/50 text-xs font-bold">
                 {items.length} أصناف
               </span>
             </div>
@@ -118,7 +118,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </p>
                 <button
                   onClick={onClose}
-                  className="mt-5 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black text-xs font-bold transition-all"
+                  className="mt-5 px-5 py-2.5 rounded-xl bg-[#7a172b] hover:bg-[#641220] text-white text-xs font-bold transition-all"
                 >
                   تصفح المنيو الآن
                 </button>
@@ -142,7 +142,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     <h4 className="text-xs sm:text-sm font-bold text-white truncate">
                       {item.dish.name}
                     </h4>
-                    <p className="text-xs text-amber-400 font-black mt-0.5">
+                    <p className="text-xs text-rose-400 font-black mt-0.5">
                       {item.dish.price * item.quantity} ج.م
                     </p>
                     {item.notes && (
@@ -194,28 +194,28 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   placeholder="اسمك الكريم"
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400"
+                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-rose-400"
                 />
                 <input
                   type="tel"
                   placeholder="رقم الهاتف (للتواصل مع المندوب)"
                   value={customerPhone}
                   onChange={(e) => setCustomerPhone(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400"
+                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-rose-400"
                 />
                 <input
                   type="text"
                   placeholder="العنوان بالتفصيل (المنطقة، الشارع، العمارة)"
                   value={customerAddress}
                   onChange={(e) => setCustomerAddress(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400"
+                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-rose-400"
                 />
                 <input
                   type="text"
                   placeholder="ملاحظات للطلب..."
                   value={orderNotes}
                   onChange={(e) => setOrderNotes(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400"
+                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-rose-400"
                 />
               </div>
             )}
@@ -234,7 +234,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   <span>خدمة التوصيل:</span>
                   <span className="font-bold text-white">15 ج.م</span>
                 </div>
-                <div className="flex justify-between text-base font-black text-amber-400 pt-2 border-t border-white/10">
+                <div className="flex justify-between text-base font-black text-rose-400 pt-2 border-t border-white/10">
                   <span>الإجمالي الكلي:</span>
                   <span>{total} ج.م</span>
                 </div>
@@ -264,9 +264,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <div className="text-center pt-1">
                 <a
                   href={RESTAURANT_INFO.callLink}
-                  className="text-xs text-slate-400 hover:text-amber-300 flex items-center justify-center gap-1.5 transition-colors"
+                  className="text-xs text-slate-400 hover:text-rose-300 flex items-center justify-center gap-1.5 transition-colors"
                 >
-                  <Phone className="w-3 h-3 text-amber-400" />
+                  <Phone className="w-3 h-3 text-rose-400" />
                   <span>أو اطلب هاتفياً مباشرة: {RESTAURANT_INFO.phone}</span>
                 </a>
               </div>

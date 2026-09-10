@@ -39,47 +39,47 @@ const SEAFOOD_THEMES = [
     glow: 'rgba(56, 189, 248, 0.35)',
   },
   {
-    bg: 'from-[#2e1304] via-[#461e07] to-[#180902]',
-    accent: '#fb923c',
-    glow: 'rgba(251, 146, 60, 0.35)',
-  },
-  {
-    bg: 'from-[#290d14] via-[#3f131d] to-[#140407]',
+    bg: 'from-[#2e0915] via-[#460f21] to-[#180309]',
     accent: '#f43f5e',
     glow: 'rgba(244, 63, 94, 0.35)',
   },
   {
-    bg: 'from-[#201803] via-[#352907] to-[#0f0c01]',
-    accent: '#facc15',
-    glow: 'rgba(250, 204, 21, 0.35)',
+    bg: 'from-[#290d14] via-[#3f131d] to-[#140407]',
+    accent: '#fb7185',
+    glow: 'rgba(251, 113, 133, 0.35)',
+  },
+  {
+    bg: 'from-[#1e0710] via-[#350d1c] to-[#0f0207]',
+    accent: '#fda4af',
+    glow: 'rgba(253, 164, 175, 0.35)',
   },
 ];
 
 const SYRIAN_THEMES = [
   {
-    bg: 'from-[#2d1204] via-[#451b07] to-[#170701]',
-    accent: '#f59e0b',
-    glow: 'rgba(245, 158, 11, 0.35)',
+    bg: 'from-[#2b0813] via-[#4a0d20] to-[#150208]',
+    accent: '#9f1239',
+    glow: 'rgba(159, 18, 57, 0.35)',
   },
   {
-    bg: 'from-[#2a1702] via-[#412404] to-[#150a01]',
-    accent: '#fbbf24',
-    glow: 'rgba(251, 191, 36, 0.35)',
+    bg: 'from-[#260510] via-[#43091c] to-[#130107]',
+    accent: '#be123c',
+    glow: 'rgba(190, 18, 60, 0.35)',
   },
   {
-    bg: 'from-[#2b1003] via-[#431905] to-[#160601]',
-    accent: '#f97316',
-    glow: 'rgba(249, 115, 22, 0.35)',
+    bg: 'from-[#280a14] via-[#441122] to-[#140309]',
+    accent: '#e11d48',
+    glow: 'rgba(225, 29, 72, 0.35)',
   },
   {
-    bg: 'from-[#1f1804] via-[#322707] to-[#0f0b01]',
-    accent: '#eab308',
-    glow: 'rgba(234, 179, 8, 0.35)',
+    bg: 'from-[#20060f] via-[#380b1a] to-[#0e0106]',
+    accent: '#881337',
+    glow: 'rgba(136, 19, 55, 0.35)',
   },
   {
     bg: 'from-[#27060a] via-[#3d0b10] to-[#130204]',
-    accent: '#ef4444',
-    glow: 'rgba(239, 68, 68, 0.35)',
+    accent: '#f43f5e',
+    glow: 'rgba(244, 63, 94, 0.35)',
   },
 ];
 
@@ -339,7 +339,7 @@ export const FamilyFeastWheelModal: React.FC<FamilyFeastWheelModalProps> = ({
                 onClick={() => handleBranchSwitch('syrian')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   currentBranch === 'syrian'
-                    ? 'bg-amber-400 text-stone-950 shadow-md font-black'
+                    ? 'bg-[#881337] text-white shadow-md font-black'
                     : 'text-stone-300 hover:text-white'
                 }`}
               >
@@ -360,7 +360,7 @@ export const FamilyFeastWheelModal: React.FC<FamilyFeastWheelModalProps> = ({
 
           {/* Clean Header: "منيو العائلات" Only + Active Dish Name (No emojis) */}
           <div className="relative z-30 text-center px-4 pt-1">
-            <span className="inline-block text-xs font-bold tracking-wider uppercase text-amber-300/90 mb-0.5">
+            <span className="inline-block text-xs font-bold tracking-wider uppercase text-rose-300/90 mb-0.5">
               منيو العائلات
             </span>
             <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight drop-shadow-md">
@@ -389,7 +389,7 @@ export const FamilyFeastWheelModal: React.FC<FamilyFeastWheelModalProps> = ({
             >
               {/* Turntable 3D Pedestal Base / Lower Cylinder Skirt showing solid wood thickness */}
               <div
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 translate-y-10 sm:translate-y-12 w-[340px] sm:w-[410px] h-[58px] sm:h-[68px] rounded-[50%] bg-gradient-to-b from-[#2b1007] via-[#120401] to-black shadow-[0_30px_50px_rgba(0,0,0,0.98)] border-b-2 border-amber-600/40 pointer-events-none"
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 translate-y-10 sm:translate-y-12 w-[340px] sm:w-[410px] h-[58px] sm:h-[68px] rounded-[50%] bg-gradient-to-b from-[#2b0813] via-[#120207] to-black shadow-[0_30px_50px_rgba(0,0,0,0.98)] border-b-2 border-rose-900/40 pointer-events-none"
               />
 
               {/* Circular 3D Turntable Disc with Inlaid Parquet Wood & Brass Inlays */}
@@ -699,8 +699,8 @@ export const FamilyFeastWheelModal: React.FC<FamilyFeastWheelModalProps> = ({
 
                         {/* Front Dish Specialty Ribbon Tag */}
                         {isCenter && feast.badgeText && (
-                          <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-0.5 rounded-full text-[10px] font-black bg-stone-950/95 text-amber-300 border border-amber-400/60 shadow-xl flex items-center gap-1.5 z-40">
-                            <Award className="w-3 h-3 text-amber-400 shrink-0" />
+                          <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-0.5 rounded-full text-[10px] font-black bg-stone-950/95 text-rose-300 border border-rose-500/60 shadow-xl flex items-center gap-1.5 z-40">
+                            <Award className="w-3 h-3 text-rose-400 shrink-0" />
                             <span>{feast.badgeText}</span>
                             <span className="text-stone-400 text-[9px] font-normal">• {feast.servesCount}</span>
                           </div>
@@ -719,7 +719,7 @@ export const FamilyFeastWheelModal: React.FC<FamilyFeastWheelModalProps> = ({
             <div className="flex flex-wrap items-center justify-center gap-2 mb-2">
               <div className="px-3.5 py-1 rounded-xl bg-white/15 border border-white/20 text-white text-base sm:text-lg font-black tracking-tight shadow-sm">
                 <span>{activeDish.price.toLocaleString('ar-EG')}</span>
-                <span className="text-xs font-bold mr-1 text-amber-300">ج.م</span>
+                <span className="text-xs font-bold mr-1 text-rose-300">ج.م</span>
               </div>
 
               <div className="flex items-center gap-1 px-3 py-1 rounded-xl bg-black/50 border border-white/15 text-xs font-bold text-stone-200">

@@ -84,7 +84,7 @@ export const FloatingActions: React.FC<FloatingActionsProps> = ({
           <div className="relative">
             <ShoppingBag className="w-6 h-6 text-stone-700 dark:text-stone-400 group-hover:text-black dark:group-hover:text-white transition-transform group-hover:scale-110" />
             {cartCount > 0 && (
-              <span className="absolute -top-2 -right-2.5 min-w-[20px] h-5 px-1.5 rounded-full bg-black dark:bg-amber-400 text-white dark:text-stone-950 text-[10px] font-black font-mono flex items-center justify-center border-2 border-white dark:border-stone-900 shadow-sm animate-pulse">
+              <span className="absolute -top-2 -right-2.5 min-w-[20px] h-5 px-1.5 rounded-full bg-[#7a172b] dark:bg-[#9f1239] text-white text-[10px] font-black font-mono flex items-center justify-center border-2 border-white dark:border-stone-900 shadow-sm animate-pulse">
                 {cartCount}
               </span>
             )}

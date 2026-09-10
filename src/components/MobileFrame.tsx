@@ -25,12 +25,12 @@ export const MobileFrame: React.FC<MobileFrameProps> = ({
       {/* Top Simulator Controls Toolbar */}
       <div className="w-full max-w-sm mb-4 flex items-center justify-between px-4 py-2.5 rounded-2xl bg-white dark:bg-stone-900 border border-black/10 dark:border-white/10 shadow-sm text-xs backdrop-blur-md">
         <div className="flex items-center gap-2 text-stone-900 dark:text-stone-100">
-          <Smartphone className="w-4 h-4 text-black dark:text-amber-400" />
+          <Smartphone className="w-4 h-4 text-black dark:text-rose-400" />
           <span className="font-bold">معاينة فورية للموبايل (Mobile Preview)</span>
         </div>
         <button
           onClick={onToggle}
-          className="flex items-center gap-1 px-3 py-1 rounded-xl bg-black hover:bg-stone-800 dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-stone-950 text-white font-black text-[11px] transition-all shadow-xs cursor-pointer"
+          className="flex items-center gap-1 px-3 py-1 rounded-xl bg-black hover:bg-stone-800 dark:bg-[#881337] dark:hover:bg-[#9f1239] dark:text-white text-white font-black text-[11px] transition-all shadow-xs cursor-pointer"
         >
           <Monitor className="w-3.5 h-3.5" />
           <span>شاشة كاملة</span>

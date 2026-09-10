@@ -57,15 +57,15 @@ export const FoodCard: React.FC<FoodCardProps> = React.memo(({
         {dish.badge && (
           <div className="flex items-center justify-end z-10 mb-1">
             {dish.badge === 'bestseller' && (
-              <span className="flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[9px] font-black bg-amber-500 text-white shadow-2xs">
+              <span className="flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[9px] font-black bg-[#881337] text-white shadow-2xs">
                 <Award className="w-2.5 h-2.5" />
                 <span>{dish.badgeText || 'الأكثر طلباً'}</span>
               </span>
             )}
 
             {dish.badge === 'signature' && (
-              <span className="flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[9px] font-black bg-black dark:bg-amber-400 text-white dark:text-stone-950 shadow-2xs">
-                <Sparkles className="w-2.5 h-2.5 text-amber-300 dark:text-stone-950" />
+              <span className="flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[9px] font-black bg-[#6b1426] dark:bg-[#9f1239] text-white shadow-2xs">
+                <Sparkles className="w-2.5 h-2.5 text-rose-200" />
                 <span>{dish.badgeText || 'توقيع السلطان'}</span>
               </span>
             )}
@@ -102,7 +102,7 @@ export const FoodCard: React.FC<FoodCardProps> = React.memo(({
 
         {/* Content Details */}
         <div className="flex flex-col flex-1 z-10 mt-1">
-          <h3 className="text-xs sm:text-sm font-black text-stone-900 dark:text-stone-100 tracking-tight hover:text-[#881a20] dark:hover:text-amber-400 transition-colors line-clamp-1">
+          <h3 className="text-xs sm:text-sm font-black text-stone-900 dark:text-stone-100 tracking-tight hover:text-[#7a172b] dark:hover:text-[#fb7185] transition-colors line-clamp-1">
             {dish.name}
           </h3>
 
@@ -124,7 +124,7 @@ export const FoodCard: React.FC<FoodCardProps> = React.memo(({
                   }}
                   className={`px-1.5 py-0.5 rounded-md text-[9px] font-black transition-all cursor-pointer ${
                     selectedSizeIndex === idx
-                      ? 'bg-black dark:bg-amber-400 text-white dark:text-stone-950'
+                      ? 'bg-[#7a172b] dark:bg-[#9f1239] text-white'
                       : 'bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300'
                   }`}
                 >
@@ -157,7 +157,7 @@ export const FoodCard: React.FC<FoodCardProps> = React.memo(({
               className={`flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-black transition-all shadow-xs cursor-pointer select-none active:scale-95 ${
                 isAddedAnim
                   ? 'bg-emerald-600 text-white'
-                  : 'bg-stone-900 hover:bg-black dark:bg-amber-400 dark:hover:bg-amber-300 text-white dark:text-stone-950'
+                  : 'bg-[#7a172b] hover:bg-[#641220] dark:bg-[#9f1239] dark:hover:bg-[#881337] text-white'
               }`}
             >
               {isAddedAnim ? (

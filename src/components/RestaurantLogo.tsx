@@ -21,9 +21,9 @@ export const RestaurantLogo: React.FC<RestaurantLogoProps> = ({
 
   return (
     <div className={`flex items-center gap-3 ${className}`}>
-      <div className={`relative ${sizeClasses[size]} rounded-full p-0.5 bg-gradient-to-tr from-amber-600 via-amber-400 to-yellow-300 shadow-md shadow-amber-900/20 group`}>
+      <div className={`relative ${sizeClasses[size]} rounded-full p-0.5 bg-gradient-to-tr from-[#4c0519] via-[#881337] to-[#9f1239] shadow-md shadow-[#4c0519]/20 group`}>
         {/* Outer gentle rotating ring glow */}
-        <div className="absolute inset-0 rounded-full bg-amber-400/20 blur-xs group-hover:bg-amber-400/40 transition-colors" />
+        <div className="absolute inset-0 rounded-full bg-[#881337]/20 blur-xs group-hover:bg-[#881337]/40 transition-colors" />
         
         <div className="relative w-full h-full rounded-full overflow-hidden bg-white border-2 border-[#231811]">
           <img
@@ -38,7 +38,7 @@ export const RestaurantLogo: React.FC<RestaurantLogoProps> = ({
       {showText && (
         <div className="text-right">
           <div className="flex items-center gap-1.5">
-            <span className="text-xs font-black text-amber-800 tracking-wider">مطعم</span>
+            <span className="text-xs font-black text-[#881337] tracking-wider">مطعم</span>
             <span className="text-lg sm:text-xl font-black text-[#231811]">السلطان محمود</span>
           </div>
           <p className="text-[10px] text-[#695444] font-medium">

@@ -118,7 +118,7 @@ export const DishModal: React.FC<DishModalProps> = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 25 }}
             transition={{ type: 'spring', damping: 26, stiffness: 320 }}
-            className="relative w-full max-w-lg rounded-3xl border border-amber-500/30 overflow-hidden z-10 shadow-2xl bg-gradient-to-b from-[#1c140e] via-[#140e09] to-[#0d0906]"
+            className="relative w-full max-w-lg rounded-3xl border border-rose-900/40 overflow-hidden z-10 shadow-2xl bg-gradient-to-b from-[#180d11] via-[#12080b] to-[#0a0406]"
           >
             {/* Close button */}
             <button
@@ -130,19 +130,19 @@ export const DishModal: React.FC<DishModalProps> = ({
             </button>
 
             {/* Top Dish Visual Stage */}
-            <div className="relative w-full h-64 sm:h-72 flex items-center justify-center overflow-hidden bg-radial from-[#2d1b10] via-[#170e08] to-[#0d0805] border-b border-amber-500/20">
+            <div className="relative w-full h-64 sm:h-72 flex items-center justify-center overflow-hidden bg-radial from-[#2a0e16] via-[#17080d] to-[#0d0407] border-b border-white/10">
               {/* White & Ambient Luminous Halo Light Radiating strictly behind plate */}
               <div
                 className="absolute inset-0 pointer-events-none opacity-80 blur-3xl"
                 style={{
                   background: isSeafood
                     ? 'radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, rgba(6, 182, 212, 0.35) 40%, transparent 80%)'
-                    : 'radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, rgba(245, 158, 11, 0.35) 40%, transparent 80%)',
+                    : 'radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, rgba(159, 18, 57, 0.35) 40%, transparent 80%)',
                 }}
               />
 
               {/* Pedestal Base Ring */}
-              <div className="absolute bottom-6 w-56 h-12 rounded-full bg-gradient-to-r from-transparent via-amber-500/20 to-transparent blur-md" />
+              <div className="absolute bottom-6 w-56 h-12 rounded-full bg-gradient-to-r from-transparent via-[#881337]/25 to-transparent blur-md" />
 
               {/* Rising Steam Effect */}
               {dish.hasSteam && (
@@ -182,7 +182,7 @@ export const DishModal: React.FC<DishModalProps> = ({
                   className={`px-3 py-1 rounded-full text-xs font-black border backdrop-blur-md shadow-md ${
                     isSeafood
                       ? 'bg-cyan-950/80 text-cyan-300 border-cyan-500/50'
-                      : 'bg-amber-950/80 text-amber-300 border-amber-500/50'
+                      : 'bg-[#4c0519]/90 text-rose-200 border-rose-500/50'
                   }`}
                 >
                   {isSeafood ? 'فرع الأسماك والبحريات' : 'الفرع السوري والمشويات'}
@@ -197,7 +197,7 @@ export const DishModal: React.FC<DishModalProps> = ({
                   <h2 className="text-xl sm:text-2xl font-black text-white">
                     {dish.name}
                   </h2>
-                  <p className="text-xs text-amber-400 font-bold tracking-wide mt-0.5">
+                  <p className="text-xs text-rose-300 font-bold tracking-wide mt-0.5">
                     {dish.badgeText || (dish.branch === 'seafood' ? 'طازج من البحر يومياً' : 'مأكولات ومشويات سورية أصيلة')}
                   </p>
                 </div>
@@ -205,10 +205,10 @@ export const DishModal: React.FC<DishModalProps> = ({
                 {/* Price */}
                 <div className="text-left shrink-0">
                   <div className="flex items-baseline gap-1">
-                    <span className="text-2xl sm:text-3xl font-black text-amber-400 font-mono">
+                    <span className="text-2xl sm:text-3xl font-black text-rose-400 font-mono">
                       {grandTotal}
                     </span>
-                    <span className="text-xs font-bold text-amber-300/80">ج.م</span>
+                    <span className="text-xs font-bold text-rose-300/80">ج.م</span>
                   </div>
                   {quantity > 1 && (
                     <p className="text-[11px] text-slate-400 font-mono">
@@ -237,7 +237,7 @@ export const DishModal: React.FC<DishModalProps> = ({
                         onClick={() => setSelectedSizeIndex(idx)}
                         className={`p-2 rounded-xl text-xs font-bold flex flex-col items-center justify-center gap-1 transition-all cursor-pointer ${
                           selectedSizeIndex === idx
-                            ? 'bg-amber-500 text-black shadow-md shadow-amber-500/30 ring-2 ring-white'
+                            ? 'bg-[#881337] text-white shadow-md shadow-rose-950/40 ring-2 ring-white'
                             : 'bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10'
                         }`}
                       >
@@ -253,12 +253,12 @@ export const DishModal: React.FC<DishModalProps> = ({
               {availableExtras.length > 0 && (
                 <div className="mt-4 pt-3 border-t border-white/10">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-black text-amber-300 flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                    <span className="text-xs font-black text-rose-200 flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-rose-400" />
                       <span>الإضافات والصوصات والمشروبات (اختياري):</span>
                     </span>
                     {selectedExtraIds.length > 0 && (
-                      <span className="text-[11px] font-mono text-amber-400 font-bold">
+                      <span className="text-[11px] font-mono text-rose-300 font-bold">
                         +{extrasUnitPrice} ج.م إضافات
                       </span>
                     )}
@@ -273,7 +273,7 @@ export const DishModal: React.FC<DishModalProps> = ({
                           onClick={() => toggleExtra(extra.id)}
                           className={`flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer text-right border ${
                             isSelected
-                              ? 'bg-amber-500/20 border-amber-400 text-white shadow-xs'
+                              ? 'bg-rose-900/30 border-rose-500 text-white shadow-xs'
                               : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'
                           }`}
                         >
@@ -281,7 +281,7 @@ export const DishModal: React.FC<DishModalProps> = ({
                             <div
                               className={`w-4 h-4 rounded flex items-center justify-center border transition-all ${
                                 isSelected
-                                  ? 'bg-amber-500 border-amber-500 text-black'
+                                  ? 'bg-rose-600 border-rose-500 text-white'
                                   : 'border-white/30 bg-black/40'
                               }`}
                             >
@@ -289,7 +289,7 @@ export const DishModal: React.FC<DishModalProps> = ({
                             </div>
                             <span className="text-xs font-medium">{extra.name}</span>
                           </div>
-                          <span className="text-amber-400 font-mono font-black text-xs mr-2">
+                          <span className="text-rose-300 font-mono font-black text-xs mr-2">
                             +{extra.price} ج.م
                           </span>
                         </button>
@@ -303,7 +303,7 @@ export const DishModal: React.FC<DishModalProps> = ({
               {dish.ingredients && dish.ingredients.length > 0 && (
                 <div className="mt-3.5 pt-3 border-t border-white/10">
                   <div className="flex items-center gap-1.5 text-xs font-bold text-slate-300 mb-2">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                    <Sparkles className="w-3.5 h-3.5 text-rose-400" />
                     <span>المكونات وتتبيلة مطعم السلطان محمود:</span>
                   </div>
                   <div className="flex flex-wrap gap-1.5">
@@ -324,7 +324,7 @@ export const DishModal: React.FC<DishModalProps> = ({
                 <div className="p-2 rounded-xl bg-white/5 border border-white/5">
                   <span className="text-[10px] text-slate-400 block">وقت التحضير</span>
                   <span className="text-xs font-bold text-white flex items-center justify-center gap-1 mt-0.5">
-                    <Clock className="w-3 h-3 text-amber-400" />
+                    <Clock className="w-3 h-3 text-rose-300" />
                     {dish.prepTimeMinutes || 15} دقيقة
                   </span>
                 </div>
@@ -353,7 +353,7 @@ export const DishModal: React.FC<DishModalProps> = ({
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="أضف ملاحظتك للمطعم هنا..."
-                  className="w-full px-3.5 py-2 rounded-xl bg-black/50 border border-white/15 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400 transition-colors"
+                  className="w-full px-3.5 py-2 rounded-xl bg-black/50 border border-white/15 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-rose-400 transition-colors"
                 />
               </div>
 
@@ -390,7 +390,7 @@ export const DishModal: React.FC<DishModalProps> = ({
                       ? 'bg-emerald-600'
                       : isSeafood
                       ? 'bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500'
-                      : 'bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500'
+                      : 'bg-gradient-to-r from-[#4c0519] to-[#881337] hover:from-[#5c0720] hover:to-[#9f1239]'
                   }`}
                 >
                   {addedSuccess ? (

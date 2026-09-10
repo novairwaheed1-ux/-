@@ -39,7 +39,7 @@ export const Header: React.FC<HeaderProps> = () => {
               playReelSound();
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className="relative w-19 h-19 sm:w-24 sm:h-24 rounded-full p-1 bg-gradient-to-tr from-amber-500 via-amber-300 to-amber-600 shadow-xl cursor-pointer shrink-0 group transform-gpu"
+            className="relative w-19 h-19 sm:w-24 sm:h-24 rounded-full p-1 bg-gradient-to-tr from-[#4c0519] via-[#881337] to-[#9f1239] shadow-xl cursor-pointer shrink-0 group transform-gpu"
           >
             <div className="w-full h-full rounded-full overflow-hidden bg-white border-2 border-stone-900 shadow-inner">
               <img
@@ -58,7 +58,7 @@ export const Header: React.FC<HeaderProps> = () => {
               مطعم السلطان محمود
             </h1>
             <p className="text-[11px] sm:text-xs text-stone-300 font-bold mt-0.5 flex items-center gap-1 drop-shadow-sm">
-              <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              <MapPin className="w-3.5 h-3.5 text-rose-400 shrink-0" />
               <span>ديروط • أسماك طازجة & مشويات سورية</span>
             </p>
           </div>
