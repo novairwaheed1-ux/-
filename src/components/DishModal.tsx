@@ -197,8 +197,8 @@ export const DishModal: React.FC<DishModalProps> = ({
                   <h2 className="text-xl sm:text-2xl font-black text-white">
                     {dish.name}
                   </h2>
-                  <p className="text-xs text-amber-400/80 font-mono tracking-wider mt-0.5">
-                    {dish.nameEn}
+                  <p className="text-xs text-amber-400 font-bold tracking-wide mt-0.5">
+                    {dish.badgeText || (dish.branch === 'seafood' ? 'طازج من البحر يومياً' : 'مأكولات ومشويات سورية أصيلة')}
                   </p>
                 </div>
 

@@ -139,7 +139,7 @@ export const Footer: React.FC<FooterProps> = ({ onScrollToTop }) => {
                 }}
                 className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 font-bold transition-all text-xs w-full cursor-pointer hover:border-white/30"
               >
-                <span>الرجوع لأعلى الصفحة ↑</span>
+                <span>الرجوع لأعلى الصفحة</span>
               </button>
             </div>
           </div>
