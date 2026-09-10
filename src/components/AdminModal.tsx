@@ -659,7 +659,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                                     : 'bg-red-500/15 text-red-400 border border-red-500/20'
                                 }`}
                               >
-                                {dish.available ? 'متاح للطلب ✓' : 'غير متوفر ✕'}
+                                {dish.available ? 'متاح للطلب' : 'غير متوفر'}
                               </button>
 
                               {/* Steam Effect Toggle */}

@@ -39,7 +39,7 @@ export interface DishItem {
   image: string;
   badge?: 'bestseller' | 'hot' | 'new' | 'chef-choice' | 'signature';
   badgeText?: string;
-  hasSteam: boolean; // Enables realistic rising steam particle animation
+  hasSteam?: boolean; // Enables realistic rising steam particle animation
   spicyLevel?: 0 | 1 | 2 | 3;
   prepTimeMinutes?: number;
   calories?: number;

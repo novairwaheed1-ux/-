@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { MessageCircle, Flame, Award, Plus, Sparkles } from 'lucide-react';
+import { Flame, Award, Plus, Sparkles, Check } from 'lucide-react';
 import { DishItem } from '../types';
 import { playReelSound } from '../utils/audio';
 
@@ -8,14 +8,13 @@ interface FoodCardProps {
   dish: DishItem;
   onAddToCart: (dish: DishItem) => void;
   onSelectDish: (dish: DishItem) => void;
-  onOrderWhatsApp: (dish: DishItem) => void;
+  onOrderWhatsApp?: (dish: DishItem) => void;
 }
 
 export const FoodCard: React.FC<FoodCardProps> = ({
   dish,
   onAddToCart,
   onSelectDish,
-  onOrderWhatsApp,
 }) => {
   const [isAddedAnim, setIsAddedAnim] = useState(false);
   const [selectedSizeIndex, setSelectedSizeIndex] = useState(0);
@@ -43,21 +42,6 @@ export const FoodCard: React.FC<FoodCardProps> = ({
       });
     } else {
       onAddToCart(dish);
-    }
-  };
-
-  const handleWhatsAppWithSelectedSize = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    playReelSound();
-    if (dish.sizes && dish.sizes.length > 0) {
-      const chosenSize = dish.sizes[selectedSizeIndex];
-      onOrderWhatsApp({
-        ...dish,
-        price: chosenSize.price,
-        name: `${dish.name} (${chosenSize.name})`,
-      });
-    } else {
-      onOrderWhatsApp(dish);
     }
   };
 
@@ -147,36 +131,43 @@ export const FoodCard: React.FC<FoodCardProps> = ({
             </div>
           )}
 
-          {/* Pricing & Pill Add Button */}
-          <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-stone-100 gap-1.5">
-            {/* Direct WhatsApp Quick Order */}
-            <button
-              id={`btn-wa-${dish.id}`}
-              type="button"
-              onClick={handleWhatsAppWithSelectedSize}
-              className="p-1.5 rounded-full bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white border border-emerald-200 transition-colors cursor-pointer shrink-0 active:scale-90"
-              title="طلب عبر واتساب"
-            >
-              <MessageCircle className="w-3.5 h-3.5" />
-            </button>
+          {/* Pricing & Add to Cart Action */}
+          <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-stone-100 gap-2">
+            {/* Price Display */}
+            <div className="flex items-baseline gap-1 text-right">
+              <span className="font-mono text-sm font-black text-stone-900">
+                {activePrice}
+              </span>
+              <span className="text-[10px] font-bold text-stone-500">ج.م</span>
+              {dish.originalPrice && dish.originalPrice > activePrice && (
+                <span className="text-[10px] text-stone-400 line-through mr-1 font-mono">
+                  {dish.originalPrice}
+                </span>
+              )}
+            </div>
 
-            {/* Pill Price Button */}
+            {/* Clean Add to Cart Pill Button */}
             <button
               id={`btn-cart-${dish.id}`}
               type="button"
               onClick={handleAddWithSelectedSize}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-full text-xs font-black transition-all shadow-xs cursor-pointer select-none active:scale-95 ${
+              className={`flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-black transition-all shadow-xs cursor-pointer select-none active:scale-95 ${
                 isAddedAnim
                   ? 'bg-emerald-600 text-white'
                   : 'bg-stone-900 hover:bg-black text-white'
               }`}
             >
-              <div className="w-3.5 h-3.5 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-                <Plus className="w-2.5 h-2.5 text-white" />
-              </div>
-              <span className="font-mono text-[11px] font-black">
-                {isAddedAnim ? 'تمت الإضافة ✓' : `${activePrice} ج.م`}
-              </span>
+              {isAddedAnim ? (
+                <>
+                  <Check className="w-3.5 h-3.5" />
+                  <span className="text-[11px] font-bold">تمت الإضافة</span>
+                </>
+              ) : (
+                <>
+                  <Plus className="w-3.5 h-3.5" />
+                  <span className="text-[11px] font-bold">إضافة</span>
+                </>
+              )}
             </button>
           </div>
         </div>

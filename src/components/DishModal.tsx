@@ -380,22 +380,12 @@ export const DishModal: React.FC<DishModalProps> = ({
                   </button>
                 </div>
 
-                {/* Direct WhatsApp button */}
-                <button
-                  type="button"
-                  onClick={handleWhatsApp}
-                  className="w-full sm:flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md active:scale-95 transition-all cursor-pointer"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  <span>طلب عبر واتساب</span>
-                </button>
-
                 {/* Add to Cart button */}
                 <button
                   type="button"
                   onClick={handleAdd}
                   disabled={addedSuccess}
-                  className={`w-full sm:flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-2xl font-bold text-xs text-white shadow-md active:scale-95 transition-all cursor-pointer ${
+                  className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl font-bold text-sm text-white shadow-md active:scale-95 transition-all cursor-pointer ${
                     addedSuccess
                       ? 'bg-emerald-600'
                       : isSeafood
@@ -405,12 +395,12 @@ export const DishModal: React.FC<DishModalProps> = ({
                 >
                   {addedSuccess ? (
                     <>
-                      <CheckCircle className="w-4 h-4" />
-                      <span>تمت الإضافة!</span>
+                      <CheckCircle className="w-5 h-5" />
+                      <span>تمت الإضافة إلى السلة</span>
                     </>
                   ) : (
                     <>
-                      <ShoppingBag className="w-4 h-4" />
+                      <ShoppingBag className="w-5 h-5" />
                       <span>إضافة للسلة ({grandTotal} ج.م)</span>
                     </>
                   )}

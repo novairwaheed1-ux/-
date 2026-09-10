@@ -19,6 +19,9 @@ const AdminModal = lazy(() =>
 const MenuPhotoModal = lazy(() =>
   import('./components/MenuPhotoModal').then((m) => ({ default: m.MenuPhotoModal }))
 );
+const FamilyFeastWheelModal = lazy(() =>
+  import('./components/FamilyFeastWheelModal').then((m) => ({ default: m.FamilyFeastWheelModal }))
+);
 
 export default function App() {
   const [dishes, setDishes] = useState<DishItem[]>(() => {
@@ -34,6 +37,7 @@ export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isPhotoMenuOpen, setIsPhotoMenuOpen] = useState(false);
+  const [isFeastWheelOpen, setIsFeastWheelOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [photoMenuInitialTab, setPhotoMenuInitialTab] = useState<'seafood' | 'syrian'>('seafood');
   const [isMobileSimulated, setIsMobileSimulated] = useState(false);
@@ -273,6 +277,7 @@ export default function App() {
           onOpenCart={handleOpenCart}
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}
+          onOpenFeastWheel={() => setIsFeastWheelOpen(true)}
         />
       </main>
 
@@ -328,6 +333,20 @@ export default function App() {
             onClose={() => setIsPhotoMenuOpen(false)}
             initialTab={photoMenuInitialTab}
             onAddToCart={handleAddToCart}
+          />
+        </Suspense>
+      )}
+
+      {/* 3D Circular Orbital Family Feast Showcase (Replicating the video) */}
+      {isFeastWheelOpen && (
+        <Suspense fallback={null}>
+          <FamilyFeastWheelModal
+            isOpen={isFeastWheelOpen}
+            onClose={() => setIsFeastWheelOpen(false)}
+            initialBranch={activeBranch}
+            onAddToCart={(dish) => handleAddToCart(dish, 1)}
+            onOrderWhatsApp={(dish) => handleDirectWhatsApp(dish, 1)}
+            onSelectDish={handleSelectDish}
           />
         </Suspense>
       )}

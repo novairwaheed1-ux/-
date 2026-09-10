@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Fish, Flame, CheckCircle2, ChevronDown } from 'lucide-react';
+import { Fish, Flame, CheckCircle2, ChevronDown, Sparkles, ChevronLeft } from 'lucide-react';
 import { DishItem, BranchType } from '../types';
 import { FoodCard } from './FoodCard';
 import { playReelSound } from '../utils/audio';
@@ -20,6 +20,7 @@ interface MenuSectionProps {
   onOpenCart?: () => void;
   selectedCategory?: string;
   onCategoryChange?: (category: string) => void;
+  onOpenFeastWheel?: () => void;
 }
 
 export const MenuSection: React.FC<MenuSectionProps> = ({
@@ -31,6 +32,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
   onOrderWhatsApp,
   selectedCategory: externalSelectedCategory,
   onCategoryChange,
+  onOpenFeastWheel,
 }) => {
   const [internalCategory, setInternalCategory] = useState<string>('all');
   const currentCategory = externalSelectedCategory !== undefined ? externalSelectedCategory : internalCategory;
@@ -270,6 +272,52 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
 
         {/* Anchor point for automatic smooth downward scroll */}
         <div id="dishes-grid-anchor" className="scroll-mt-4" />
+
+        {/* VIP Family Feasts & Trays Interactive Wheel Trigger Button */}
+        {onOpenFeastWheel && (
+          <div className="mb-4">
+            <button
+              type="button"
+              id="btn-open-feast-wheel"
+              onClick={() => {
+                playReelSound();
+                onOpenFeastWheel();
+              }}
+              className={`group w-full relative overflow-hidden rounded-2xl py-2.5 px-4 flex items-center justify-between gap-3 border-2 transition-all duration-200 active:scale-[0.99] cursor-pointer shadow-xs ${
+                currentBranch === 'seafood'
+                  ? 'bg-gradient-to-r from-[#03232b] via-[#073641] to-[#041f26] border-cyan-400/50 text-white hover:border-cyan-300'
+                  : 'bg-gradient-to-r from-[#301306] via-[#481e08] to-[#240b02] border-amber-400/50 text-white hover:border-amber-300'
+              }`}
+            >
+              {/* Right Side in RTL: Title "منيو العائلات" */}
+              <div className="flex items-center gap-2.5">
+                <div
+                  className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 shadow-xs ${
+                    currentBranch === 'seafood'
+                      ? 'bg-cyan-400 text-stone-950 font-black'
+                      : 'bg-amber-400 text-stone-950 font-black'
+                  }`}
+                >
+                  <Sparkles className="w-4 h-4" />
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-black tracking-tight">
+                    منيو العائلات
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-white/15 text-amber-300 border border-white/20">
+                    عرض تفاعلي
+                  </span>
+                </div>
+              </div>
+
+              {/* Left Side: Arrow */}
+              <div className="flex items-center gap-1 text-xs font-bold text-stone-300 group-hover:text-white transition-colors">
+                <span>تصفح</span>
+                <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+              </div>
+            </button>
+          </div>
+        )}
 
         {/* Sub-category Filter Pills with Fluid Native Momentum Scrolling */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-4 no-scrollbar justify-start sm:justify-center scroll-smooth overscroll-x-contain">
