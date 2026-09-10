@@ -24,6 +24,7 @@ import {
   SlidersHorizontal,
   ChevronRight,
   ShieldCheck,
+  AlertTriangle,
 } from 'lucide-react';
 import { DishItem } from '../types';
 import { DEFAULT_DISHES, resetToDefaultDishes, ADMIN_PASSWORD } from '../data/dishes';
@@ -49,6 +50,9 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   const [localDishes, setLocalDishes] = useState<DishItem[]>(dishes);
   const [activeTab, setActiveTab] = useState<'dishes' | 'add' | 'backup'>('dishes');
   const [saveSuccessMsg, setSaveSuccessMsg] = useState('');
+  const [addError, setAddError] = useState('');
+  const [dishToDelete, setDishToDelete] = useState<DishItem | null>(null);
+  const [isConfirmResetOpen, setIsConfirmResetOpen] = useState(false);
 
   // Admin search and filter
   const [adminSearch, setAdminSearch] = useState('');
@@ -167,15 +171,22 @@ export const AdminModal: React.FC<AdminModalProps> = ({
     setTimeout(() => setSaveSuccessMsg(''), 2500);
   };
 
-  const handleDeleteDish = (dishId: string) => {
+  const handleDeleteDish = (dish: DishItem) => {
     playReelSound();
-    if (window.confirm('هل أنت متأكد من حذف هذا الطبق نهائياً من قائمة الطعام؟')) {
-      const updated = localDishes.filter((d) => d.id !== dishId);
-      setLocalDishes(updated);
-      onSaveDishes(updated);
-      setSaveSuccessMsg('تم حذف الصنف وتحديث القائمة فوراً!');
-      setTimeout(() => setSaveSuccessMsg(''), 2500);
-    }
+    setDishToDelete(dish);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!dishToDelete) return;
+    playReelSound();
+    const targetId = dishToDelete.id;
+    const targetName = dishToDelete.name;
+    const updated = localDishes.filter((d) => d.id !== targetId);
+    setLocalDishes(updated);
+    onSaveDishes(updated);
+    setDishToDelete(null);
+    setSaveSuccessMsg(`تم حذف صنف «${targetName}» بنجاح!`);
+    setTimeout(() => setSaveSuccessMsg(''), 2500);
   };
 
   const handleSaveAllChanges = () => {
@@ -188,19 +199,27 @@ export const AdminModal: React.FC<AdminModalProps> = ({
   const handleAddNewDish = (e: React.FormEvent) => {
     e.preventDefault();
     playReelSound();
-    if (!newDish.name || !newDish.price) {
-      alert('يرجى ملء اسم الصنف والسعر');
+    const trimmedName = newDish.name?.trim();
+    if (!trimmedName) {
+      setAddError('يرجى كتابة اسم الصنف بالعربي أولاً');
+      return;
+    }
+    const numPrice = Number(newDish.price);
+    if (isNaN(numPrice) || numPrice < 0) {
+      setAddError('يرجى إدخال سعر صحيح ومناسب للصنف');
       return;
     }
 
+    setAddError('');
+
     const created: DishItem = {
       id: `dish-custom-${Date.now()}`,
-      name: newDish.name,
-      nameEn: newDish.nameEn || 'Special Item',
+      name: trimmedName,
+      nameEn: newDish.nameEn?.trim() || 'Special Item',
       branch: newDish.branch || 'seafood',
       category: newDish.category || 'meals',
-      price: Number(newDish.price),
-      description: newDish.description || 'طبق مميز طازج من مطعم السلطان محمود',
+      price: numPrice,
+      description: newDish.description?.trim() || 'طبق مميز طازج ومعد بأعلى جودة من مطبخ السلطان محمود',
       image: newDish.image || DEFAULT_DISHES[0].image,
       hasSteam: !!newDish.hasSteam,
       available: true,
@@ -212,20 +231,36 @@ export const AdminModal: React.FC<AdminModalProps> = ({
     const updated = [created, ...localDishes];
     setLocalDishes(updated);
     onSaveDishes(updated);
+
+    // Reset form for next item
+    setNewDish({
+      name: '',
+      nameEn: '',
+      branch: newDish.branch || 'seafood',
+      category: newDish.category || 'meals',
+      price: 120,
+      description: '',
+      image: DEFAULT_DISHES[0].image,
+      hasSteam: true,
+      available: true,
+      prepTimeMinutes: 15,
+    });
+
+    setAdminSearch('');
     setActiveTab('dishes');
-    setSaveSuccessMsg('تمت إضافة الصنف الجديد ونشره فوراً في الموقع!');
+    setSaveSuccessMsg(`تمت إضافة صنف «${created.name}» ونشره في القائمة فوراً!`);
     setTimeout(() => setSaveSuccessMsg(''), 3000);
   };
 
-  const handleResetDefaults = () => {
+  const handleConfirmResetDefaults = () => {
     playReelSound();
-    if (window.confirm('هل تريد استعادة قائمة الأصناف والأسعار الافتراضية الأصلية لمطعم السلطان محمود؟')) {
-      const reset = resetToDefaultDishes();
-      setLocalDishes(reset);
-      onSaveDishes(reset);
-      setSaveSuccessMsg('تمت استعادة الأصناف والأسعار الافتراضية بنجاح!');
-      setTimeout(() => setSaveSuccessMsg(''), 3000);
-    }
+    const freshDefaults = JSON.parse(JSON.stringify(DEFAULT_DISHES));
+    setLocalDishes(freshDefaults);
+    resetToDefaultDishes();
+    onSaveDishes(freshDefaults);
+    setIsConfirmResetOpen(false);
+    setSaveSuccessMsg('✅ تمت استعادة قائمة الطعام والأسعار الأصلية بنجاح!');
+    setTimeout(() => setSaveSuccessMsg(''), 3000);
   };
 
   const handleExportDatabase = () => {
@@ -258,10 +293,12 @@ export const AdminModal: React.FC<AdminModalProps> = ({
           setSaveSuccessMsg(`تم استيراد قاعدة البيانات (${parsed.length} صنف) وتحديث الموقع فوراً!`);
           setTimeout(() => setSaveSuccessMsg(''), 3500);
         } else {
-          alert('الملف غير صالح أو لا يحتوي على بنية بيانات المنيو الصحيحة.');
+          setSaveSuccessMsg('❌ الملف غير صالح أو لا يحتوي على بنية بيانات المنيو الصحيحة');
+          setTimeout(() => setSaveSuccessMsg(''), 3500);
         }
       } catch {
-        alert('حدث خطأ أثناء قراءة ملف JSON.');
+        setSaveSuccessMsg('❌ حدث خطأ أثناء قراءة ملف JSON');
+        setTimeout(() => setSaveSuccessMsg(''), 3500);
       }
     };
     reader.readAsText(file);
@@ -481,8 +518,12 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                 {/* Reset Defaults Action */}
                 <button
                   type="button"
-                  onClick={handleResetDefaults}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-amber-500/10 text-stone-400 hover:text-amber-400 text-[11px] font-bold transition-colors cursor-pointer"
+                  onClick={() => {
+                    playReelSound();
+                    setIsConfirmResetOpen(true);
+                  }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-amber-500/10 text-stone-400 hover:text-amber-400 text-[11px] font-bold transition-colors cursor-pointer active:scale-95"
+                  title="استعادة كافة الأصناف والأسعار الافتراضية"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                   <span>استعادة المنيو الأصلي</span>
@@ -691,8 +732,8 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                               {/* Delete Dish */}
                               <button
                                 type="button"
-                                onClick={() => handleDeleteDish(dish.id)}
-                                className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 cursor-pointer transition-colors"
+                                onClick={() => handleDeleteDish(dish)}
+                                className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 cursor-pointer transition-colors active:scale-95"
                                 title="حذف الصنف"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
@@ -712,6 +753,13 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                       <Plus className="w-4 h-4 text-amber-400" />
                       <span>إضافة صنف جديد لمنيو السلطان محمود</span>
                     </h3>
+
+                    {addError && (
+                      <div className="mt-3 p-3 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-bold flex items-center gap-2">
+                        <AlertTriangle className="w-4 h-4 shrink-0" />
+                        <span>{addError}</span>
+                      </div>
+                    )}
 
                     <form onSubmit={handleAddNewDish} className="mt-4 space-y-4 text-xs">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -929,12 +977,128 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                         </label>
                       </div>
                     </div>
+
+                    {/* Restore Factory Defaults Card */}
+                    <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
+                          <RotateCcw className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h5 className="text-xs font-black text-white">استعادة المنيو الأصلي المعتمد</h5>
+                          <p className="text-[11px] text-stone-400 mt-0.5 leading-relaxed">
+                            إعادة ضبط كافة الأصناف والأسعار الافتراضية لجميع الفروع (البحريات والسوري والمشويات) بضغطة زر واحدة وبدون أي تعليق.
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          playReelSound();
+                          setIsConfirmResetOpen(true);
+                        }}
+                        className="py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 text-xs font-black flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md shrink-0 active:scale-95"
+                      >
+                        <RotateCcw className="w-4 h-4" />
+                        <span>استعادة المنيو الآن</span>
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
             </>
           )}
         </motion.div>
+
+        {/* ================= IN-APP CONFIRMATION MODAL: RESTORE ORIGINAL MENU ================= */}
+        <AnimatePresence>
+          {isConfirmResetOpen && (
+            <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0, y: 10 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, y: 10 }}
+                transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                className="w-full max-w-md p-6 rounded-3xl bg-[#1e1916] border border-amber-500/40 shadow-2xl text-center space-y-4 relative z-70"
+              >
+                <div className="w-14 h-14 mx-auto rounded-2xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center shadow-lg shadow-amber-500/10">
+                  <RotateCcw className="w-7 h-7 animate-spin-reverse" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-white">استعادة المنيو الأصلي المعتمد؟</h3>
+                  <p className="text-xs text-stone-400 mt-2 leading-relaxed">
+                    سيتم إرجاع جميع أصناف وقوائم المنيو والأسعار الرسمية لفرعي الأسماك والبحريات والمشويات السورية إلى الإعدادات الافتراضية الأصلية فوراً.
+                  </p>
+                </div>
+                <div className="flex gap-2.5 pt-2">
+                  <button
+                    type="button"
+                    onClick={handleConfirmResetDefaults}
+                    className="flex-1 py-3 px-4 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-black text-xs shadow-lg cursor-pointer transition-all active:scale-95"
+                  >
+                    نعم، استعادة المنيو فوراً
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsConfirmResetOpen(false)}
+                    className="py-3 px-5 rounded-2xl bg-white/10 hover:bg-white/15 text-stone-300 font-bold text-xs cursor-pointer transition-colors"
+                  >
+                    إلغاء
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+
+        {/* ================= IN-APP CONFIRMATION MODAL: DELETE DISH ================= */}
+        <AnimatePresence>
+          {dishToDelete && (
+            <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0, y: 10 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, y: 10 }}
+                transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                className="w-full max-w-md p-6 rounded-3xl bg-[#1e1916] border border-red-500/40 shadow-2xl text-center space-y-4 relative z-70"
+              >
+                <div className="w-14 h-14 mx-auto rounded-2xl bg-red-500/20 border border-red-500/40 text-red-400 flex items-center justify-center shadow-lg shadow-red-500/10">
+                  <Trash2 className="w-7 h-7" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-white">حذف الصنف نهائياً؟</h3>
+                  <div className="mt-2 p-2 rounded-xl bg-black/40 border border-white/5 inline-flex items-center gap-2 max-w-full">
+                    {dishToDelete.image && (
+                      <img src={dishToDelete.image} alt={dishToDelete.name} className="w-8 h-8 rounded-lg object-cover shrink-0" />
+                    )}
+                    <span className="text-xs text-stone-200 font-bold truncate">
+                      {dishToDelete.name} ({dishToDelete.price} ج.م)
+                    </span>
+                  </div>
+                  <p className="text-xs text-stone-400 mt-2 leading-relaxed">
+                    هل أنت متأكد من رغبتك في حذف هذا الصنف نهائياً من قائمة الطعام وموقع المطعم؟
+                  </p>
+                </div>
+                <div className="flex gap-2.5 pt-2">
+                  <button
+                    type="button"
+                    onClick={handleConfirmDelete}
+                    className="flex-1 py-3 px-4 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-black text-xs shadow-lg cursor-pointer transition-all active:scale-95"
+                  >
+                    نعم، احذف الصنف الآن
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDishToDelete(null)}
+                    className="py-3 px-5 rounded-2xl bg-white/10 hover:bg-white/15 text-stone-300 font-bold text-xs cursor-pointer transition-colors"
+                  >
+                    إلغاء
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
       </div>
     </AnimatePresence>
   );

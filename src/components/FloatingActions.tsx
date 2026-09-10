@@ -112,22 +112,20 @@ export const FloatingActions: React.FC<FloatingActionsProps> = ({
           </span>
         </div>
 
-        {/* 4. Large Prominent Admin Panel / لوحة الإدارة (Enlarged) */}
+        {/* 4. Admin Panel / لوحة الإدارة (Matched styling with other buttons) */}
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.93 }}
           id="nav-admin-btn"
           type="button"
           onClick={handleAdminClick}
-          className="flex-1 flex flex-col items-center justify-center py-2 px-2 rounded-2xl bg-stone-900 dark:bg-stone-800 hover:bg-black dark:hover:bg-stone-700 text-white border border-stone-800 dark:border-stone-700 transition-all cursor-pointer group shadow-sm min-h-[52px]"
+          className="flex-1 flex flex-col items-center justify-center py-2 px-1 rounded-2xl text-stone-700 dark:text-stone-400 hover:text-black dark:hover:text-white hover:bg-stone-100/70 dark:hover:bg-white/5 transition-all cursor-pointer group min-h-[52px]"
           title="لوحة إدارة المطعم"
         >
           <div className="relative">
-            <SlidersHorizontal className="w-5.5 h-5.5 text-amber-400 group-hover:text-amber-300 transition-transform group-hover:scale-110" />
-            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping opacity-75" />
-            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-amber-400" />
+            <SlidersHorizontal className="w-6 h-6 text-stone-700 dark:text-stone-400 group-hover:text-black dark:group-hover:text-white transition-transform group-hover:scale-110" />
           </div>
-          <span className="text-xs sm:text-[13px] font-black mt-1 text-amber-400 group-hover:text-amber-300 whitespace-nowrap">
+          <span className="text-xs sm:text-[13px] font-black mt-1 text-stone-700 dark:text-stone-400 group-hover:text-black dark:group-hover:text-white whitespace-nowrap">
             لوحة الإدارة
           </span>
         </motion.button>

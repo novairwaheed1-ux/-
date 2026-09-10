@@ -11,7 +11,7 @@ interface FoodCardProps {
   onOrderWhatsApp?: (dish: DishItem) => void;
 }
 
-export const FoodCard: React.FC<FoodCardProps> = ({
+export const FoodCard: React.FC<FoodCardProps> = React.memo(({
   dish,
   onAddToCart,
   onSelectDish,
@@ -89,8 +89,11 @@ export const FoodCard: React.FC<FoodCardProps> = ({
             <img
               src={dish.image}
               alt={dish.name}
+              width={136}
+              height={136}
               loading="lazy"
               decoding="async"
+              fetchPriority="low"
               referrerPolicy="no-referrer"
               className="w-full h-full object-contain transition-transform duration-200 group-hover:scale-105"
             />
@@ -174,4 +177,4 @@ export const FoodCard: React.FC<FoodCardProps> = ({
       </div>
     </div>
   );
-};
+});

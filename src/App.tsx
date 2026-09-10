@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { MenuSection } from './components/MenuSection';
@@ -102,34 +102,35 @@ export default function App() {
   }, []);
 
   // Close all modals helper - ensures no two modals/drawers overlap
-  const closeAllModals = () => {
+  // Close all modals helper - ensures no two modals/drawers overlap
+  const closeAllModals = useCallback(() => {
     setIsCartOpen(false);
     setIsAdminOpen(false);
     setSelectedDish(null);
     setIsPhotoMenuOpen(false);
-  };
+  }, []);
 
   // Mutually exclusive modal openers
-  const handleOpenCart = () => {
+  const handleOpenCart = useCallback(() => {
     closeAllModals();
     setIsCartOpen(true);
-  };
+  }, [closeAllModals]);
 
-  const handleOpenAdmin = () => {
+  const handleOpenAdmin = useCallback(() => {
     closeAllModals();
     setIsAdminOpen(true);
-  };
+  }, [closeAllModals]);
 
-  const handleSelectDish = (dish: DishItem) => {
+  const handleSelectDish = useCallback((dish: DishItem) => {
     closeAllModals();
     setSelectedDish(dish);
-  };
+  }, [closeAllModals]);
 
-  const handleOpenPhotoMenu = (tab: 'seafood' | 'syrian' = 'seafood') => {
+  const handleOpenPhotoMenu = useCallback((tab: 'seafood' | 'syrian' = 'seafood') => {
     closeAllModals();
     setPhotoMenuInitialTab(tab);
     setIsPhotoMenuOpen(true);
-  };
+  }, [closeAllModals]);
 
   // Close modals on Escape key
   useEffect(() => {
@@ -140,20 +141,10 @@ export default function App() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [closeAllModals]);
 
-  // Sync cart to localStorage
-  const updateCartState = (newCart: CartItem[]) => {
-    setCart(newCart);
-    try {
-      localStorage.setItem('sultan_mahmud_cart_v2', JSON.stringify(newCart));
-    } catch {
-      // ignore
-    }
-  };
-
-  // Add dish to cart
-  const handleAddToCart = (dish: Partial<DishItem>, quantity = 1, notes = '') => {
+  // Add dish to cart - purely functional state update with zero dependency on cart object
+  const handleAddToCart = useCallback((dish: Partial<DishItem>, quantity = 1, notes = '') => {
     const dishComplete: DishItem = {
       id: dish.id || `dish-${Date.now()}`,
       name: dish.name || 'وجبة السلطان',
@@ -174,59 +165,87 @@ export default function App() {
       calories: dish.calories,
     };
 
-    const existingIndex = cart.findIndex((item) => item.dish.id === dishComplete.id);
+    setCart((prevCart) => {
+      const existingIndex = prevCart.findIndex((item) => item.dish.id === dishComplete.id);
+      let updatedCart: CartItem[];
+      if (existingIndex > -1) {
+        updatedCart = [...prevCart];
+        updatedCart[existingIndex] = {
+          ...updatedCart[existingIndex],
+          quantity: updatedCart[existingIndex].quantity + quantity,
+          notes: notes || updatedCart[existingIndex].notes,
+        };
+      } else {
+        updatedCart = [
+          ...prevCart,
+          {
+            dish: dishComplete,
+            quantity,
+            selectedSize: dish.sizes?.[0]?.name,
+            notes,
+          },
+        ];
+      }
+      try {
+        localStorage.setItem('sultan_mahmud_cart_v2', JSON.stringify(updatedCart));
+      } catch {
+        // ignore
+      }
+      return updatedCart;
+    });
+  }, []);
 
-    let updatedCart: CartItem[];
-    if (existingIndex > -1) {
-      updatedCart = [...cart];
-      updatedCart[existingIndex] = {
-        ...updatedCart[existingIndex],
-        quantity: updatedCart[existingIndex].quantity + quantity,
-        notes: notes || updatedCart[existingIndex].notes,
-      };
-    } else {
-      updatedCart = [
-        ...cart,
-        {
-          dish: dishComplete,
-          quantity,
-          selectedSize: dish.sizes?.[0]?.name,
-          notes,
-        },
-      ];
-    }
-
-    updateCartState(updatedCart);
-  };
+  // Single item addition wrapper memoized for cards
+  const handleAddToCartSingle = useCallback((dish: DishItem) => {
+    handleAddToCart(dish, 1);
+  }, [handleAddToCart]);
 
   // Update quantity
-  const handleUpdateQuantity = (dishId: string, delta: number) => {
-    const updated = cart
-      .map((item) => {
-        if (item.dish.id === dishId) {
-          const newQty = item.quantity + delta;
-          return newQty > 0 ? { ...item, quantity: newQty } : null;
-        }
-        return item;
-      })
-      .filter(Boolean) as CartItem[];
-
-    updateCartState(updated);
-  };
+  const handleUpdateQuantity = useCallback((dishId: string, delta: number) => {
+    setCart((prevCart) => {
+      const updated = prevCart
+        .map((item) => {
+          if (item.dish.id === dishId) {
+            const newQty = item.quantity + delta;
+            return newQty > 0 ? { ...item, quantity: newQty } : null;
+          }
+          return item;
+        })
+        .filter(Boolean) as CartItem[];
+      try {
+        localStorage.setItem('sultan_mahmud_cart_v2', JSON.stringify(updated));
+      } catch {
+        // ignore
+      }
+      return updated;
+    });
+  }, []);
 
   // Remove item from cart
-  const handleRemoveItem = (dishId: string) => {
-    const updated = cart.filter((item) => item.dish.id !== dishId);
-    updateCartState(updated);
-  };
+  const handleRemoveItem = useCallback((dishId: string) => {
+    setCart((prevCart) => {
+      const updated = prevCart.filter((item) => item.dish.id !== dishId);
+      try {
+        localStorage.setItem('sultan_mahmud_cart_v2', JSON.stringify(updated));
+      } catch {
+        // ignore
+      }
+      return updated;
+    });
+  }, []);
 
   // Clear cart
-  const handleClearCart = () => {
-    updateCartState([]);
-  };
+  const handleClearCart = useCallback(() => {
+    setCart([]);
+    try {
+      localStorage.removeItem('sultan_mahmud_cart_v2');
+    } catch {
+      // ignore
+    }
+  }, []);
 
   // Direct WhatsApp order for single dish
-  const handleDirectWhatsApp = (dish: DishItem, quantity = 1, notes = '') => {
+  const handleDirectWhatsApp = useCallback((dish: DishItem, quantity = 1, notes = '') => {
     const branchName = dish.branch === 'seafood' ? 'فرع الأسماك' : 'الفرع السوري';
     let text = `مرحباً مطعم السلطان محمود، أريد طلب:%0A%0A`;
     text += `*${encodeURIComponent(dish.name)}* (${branchName})%0A`;
@@ -239,15 +258,19 @@ export default function App() {
 
     const url = `https://wa.me/${RESTAURANT_INFO.phoneRaw}?text=${text}`;
     window.open(url, '_blank');
-  };
+  }, []);
+
+  const handleDirectWhatsAppSingle = useCallback((dish: DishItem) => {
+    handleDirectWhatsApp(dish, 1);
+  }, [handleDirectWhatsApp]);
 
   // Admin save updated dishes
-  const handleSaveDishes = (updatedDishes: DishItem[]) => {
+  const handleSaveDishes = useCallback((updatedDishes: DishItem[]) => {
     setDishes(updatedDishes);
     saveStoredDishes(updatedDishes);
-  };
+  }, []);
 
-  const handleOpenFullMenu = (branch?: BranchType) => {
+  const handleOpenFullMenu = useCallback((branch?: BranchType) => {
     if (branch) {
       setActiveBranch(branch);
     }
@@ -255,9 +278,9 @@ export default function App() {
     if (menuEl) {
       menuEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  };
+  }, []);
 
-  const handleSelectStoryCategory = (story: CategoryStoryItem) => {
+  const handleSelectStoryCategory = useCallback((story: CategoryStoryItem) => {
     setActiveBranch(story.branch);
     if (story.subCategory) {
       setSelectedCategory(story.subCategory);
@@ -268,13 +291,16 @@ export default function App() {
     if (menuEl) {
       menuEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  };
+  }, []);
 
-  const handleScrollToTop = () => {
+  const handleScrollToTop = useCallback(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  }, []);
 
-  const totalCartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+  const totalCartCount = useMemo(
+    () => cart.reduce((acc, item) => acc + item.quantity, 0),
+    [cart]
+  );
 
   return (
     <MobileFrame
@@ -300,9 +326,9 @@ export default function App() {
           dishes={dishes}
           activeBranch={activeBranch}
           onSelectBranch={setActiveBranch}
-          onAddToCart={(dish) => handleAddToCart(dish, 1)}
+          onAddToCart={handleAddToCartSingle}
           onSelectDish={handleSelectDish}
-          onOrderWhatsApp={(dish) => handleDirectWhatsApp(dish, 1)}
+          onOrderWhatsApp={handleDirectWhatsAppSingle}
           isOpen={isMenuOpen}
           onOpen={() => setIsMenuOpen(true)}
           onClose={() => setIsMenuOpen(false)}
@@ -324,7 +350,7 @@ export default function App() {
         cartCount={totalCartCount}
         onOpenCart={handleOpenCart}
         onOpenAdmin={handleOpenAdmin}
-        onOpenMenu={() => handleOpenFullMenu()}
+        onOpenMenu={handleOpenFullMenu}
         onScrollToTop={handleScrollToTop}
       />
 

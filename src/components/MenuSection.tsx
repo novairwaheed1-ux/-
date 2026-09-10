@@ -23,7 +23,7 @@ interface MenuSectionProps {
   onOpenFeastWheel?: () => void;
 }
 
-export const MenuSection: React.FC<MenuSectionProps> = ({
+export const MenuSection: React.FC<MenuSectionProps> = React.memo(({
   dishes,
   activeBranch,
   onSelectBranch,
@@ -379,17 +379,16 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
           className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3.5 transform-gpu"
         >
           {displayedDishes.map((dish) => (
-            <div key={dish.id} className="transform-gpu">
-              <FoodCard
-                dish={dish}
-                onAddToCart={onAddToCart}
-                onSelectDish={onSelectDish}
-                onOrderWhatsApp={onOrderWhatsApp}
-              />
-            </div>
+            <FoodCard
+              key={dish.id}
+              dish={dish}
+              onAddToCart={onAddToCart}
+              onSelectDish={onSelectDish}
+              onOrderWhatsApp={onOrderWhatsApp}
+            />
           ))}
         </motion.div>
       </div>
     </section>
   );
-};
+});

@@ -89,14 +89,14 @@ interface CategoryStoriesProps {
   onSelectCategory: (story: CategoryStoryItem) => void;
 }
 
-export const CategoryStories: React.FC<CategoryStoriesProps> = ({
+export const CategoryStories: React.FC<CategoryStoriesProps> = React.memo(({
   activeCategory,
   onSelectCategory,
 }) => {
   return (
     <div className="w-full overflow-hidden py-2">
-      <div className="flex items-center gap-3 sm:gap-4 overflow-x-auto no-scrollbar px-3 sm:px-6 pb-2 scroll-smooth overscroll-x-contain touch-pan-x">
-        {CATEGORY_STORIES.map((cat, idx) => {
+      <div className="flex items-center gap-3 sm:gap-4 overflow-x-auto no-scrollbar px-3 sm:px-6 pb-2 overscroll-x-contain touch-pan-x">
+        {CATEGORY_STORIES.map((cat) => {
           const isActive = activeCategory === cat.id || activeCategory === cat.subCategory;
           return (
             <button
@@ -119,6 +119,8 @@ export const CategoryStories: React.FC<CategoryStoriesProps> = ({
                     <img
                       src={cat.image}
                       alt={cat.name}
+                      width={68}
+                      height={68}
                       loading="eager"
                       decoding="async"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
@@ -150,4 +152,4 @@ export const CategoryStories: React.FC<CategoryStoriesProps> = ({
       </div>
     </div>
   );
-};
+});
