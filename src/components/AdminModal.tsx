@@ -351,8 +351,8 @@ export const AdminModal: React.FC<AdminModalProps> = ({
           {/* ================= LOGIN SCREEN ================= */}
           {!isAuthenticated ? (
             <div className="p-8 sm:p-12 flex flex-col items-center justify-center text-center max-w-md mx-auto my-auto w-full">
-              <div className="relative w-16 h-16 rounded-3xl bg-gradient-to-tr from-amber-600 to-amber-400 p-0.5 shadow-xl shadow-amber-500/20 mb-5">
-                <div className="w-full h-full rounded-[22px] bg-[#1a1614] flex items-center justify-center text-amber-400">
+              <div className="relative w-16 h-16 rounded-3xl bg-gradient-to-tr from-[#881337] to-rose-500 p-0.5 shadow-xl shadow-rose-950/40 mb-5">
+                <div className="w-full h-full rounded-[22px] bg-[#1a1614] flex items-center justify-center text-rose-400">
                   <ShieldCheck className="w-8 h-8" />
                 </div>
               </div>
@@ -375,7 +375,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                     }}
                     placeholder="كلمة مرور الإدارة..."
                     autoFocus
-                    className="w-full pl-11 pr-4 py-3 rounded-2xl bg-[#201b17] border border-amber-900/40 focus:border-amber-500 focus:outline-hidden text-sm font-mono text-white placeholder:text-stone-500 transition-colors text-center"
+                    className="w-full pl-11 pr-4 py-3 rounded-2xl bg-[#201b17] border border-rose-900/40 focus:border-rose-500 focus:outline-hidden text-sm font-mono text-white placeholder:text-stone-500 transition-colors text-center"
                   />
                   <button
                     type="button"
@@ -395,7 +395,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                 <div className="flex gap-2.5 pt-1">
                   <button
                     type="submit"
-                    className="flex-1 py-3 px-4 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-black text-xs sm:text-sm shadow-lg shadow-amber-500/20 transition-all cursor-pointer active:scale-98"
+                    className="flex-1 py-3 px-4 rounded-2xl bg-gradient-to-r from-[#881337] to-rose-700 hover:from-[#9f1239] hover:to-rose-600 text-white font-black text-xs sm:text-sm shadow-lg shadow-rose-950/40 transition-all cursor-pointer active:scale-98"
                   >
                     دخول لوحة التحكم
                   </button>
@@ -415,7 +415,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
               {/* Executive Header */}
               <div className="px-5 py-4 border-b border-white/10 bg-[#1a1613] flex items-center justify-between gap-3 shrink-0">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center shrink-0">
+                  <div className="w-10 h-10 rounded-2xl bg-rose-950/40 border border-rose-500/30 text-rose-400 flex items-center justify-center shrink-0">
                     <SlidersHorizontal className="w-5 h-5" />
                   </div>
                   <div>
@@ -474,7 +474,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                     }}
                     className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
                       activeTab === 'dishes'
-                        ? 'bg-amber-500 text-stone-950 shadow-md shadow-amber-500/20'
+                        ? 'bg-[#881337] text-white shadow-md shadow-rose-950/40'
                         : 'text-stone-400 hover:text-white'
                     }`}
                   >
@@ -490,7 +490,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                     }}
                     className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
                       activeTab === 'add'
-                        ? 'bg-amber-500 text-stone-950 shadow-md shadow-amber-500/20'
+                        ? 'bg-[#881337] text-white shadow-md shadow-rose-950/40'
                         : 'text-stone-400 hover:text-white'
                     }`}
                   >
@@ -506,7 +506,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                     }}
                     className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
                       activeTab === 'backup'
-                        ? 'bg-amber-500 text-stone-950 shadow-md shadow-amber-500/20'
+                        ? 'bg-[#881337] text-white shadow-md shadow-rose-950/40'
                         : 'text-stone-400 hover:text-white'
                     }`}
                   >
@@ -522,7 +522,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                     playReelSound();
                     setIsConfirmResetOpen(true);
                   }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-amber-500/10 text-stone-400 hover:text-amber-400 text-[11px] font-bold transition-colors cursor-pointer active:scale-95"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-rose-500/10 text-stone-400 hover:text-rose-400 text-[11px] font-bold transition-colors cursor-pointer active:scale-95"
                   title="استعادة كافة الأصناف والأسعار الافتراضية"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -545,7 +545,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                           value={adminSearch}
                           onChange={(e) => setAdminSearch(e.target.value)}
                           placeholder="ابحث بالاسم لتعديل السعر فوراً..."
-                          className="w-full pr-9 pl-3 py-1.5 rounded-xl bg-black/40 border border-white/10 text-xs text-white placeholder:text-stone-500 focus:outline-hidden focus:border-amber-500"
+                          className="w-full pr-9 pl-3 py-1.5 rounded-xl bg-black/40 border border-white/10 text-xs text-white placeholder:text-stone-500 focus:outline-hidden focus:border-rose-500"
                         />
                       </div>
 
@@ -573,7 +573,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                           }}
                           className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
                             branchFilter === 'seafood'
-                              ? 'bg-cyan-700 text-white'
+                              ? 'bg-[#881337] text-white'
                               : 'text-stone-400 hover:text-white'
                           }`}
                         >
@@ -601,7 +601,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                       {filteredDishes.map((dish) => (
                         <div
                           key={dish.id}
-                          className="p-3.5 rounded-2xl bg-[#1a1613] border border-white/5 hover:border-amber-500/30 transition-all flex flex-col justify-between gap-3 group"
+                          className="p-3.5 rounded-2xl bg-[#1a1613] border border-white/5 hover:border-rose-500/30 transition-all flex flex-col justify-between gap-3 group"
                         >
                           <div className="flex items-start gap-3">
                             {/* Dish Thumbnail & Image Changer */}
@@ -631,7 +631,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                                 <span
                                   className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${
                                     dish.branch === 'seafood'
-                                      ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
+                                      ? 'bg-rose-500/15 text-rose-300 border border-rose-500/20'
                                       : 'bg-red-500/10 text-red-400 border border-red-500/20'
                                   }`}
                                 >
@@ -644,7 +644,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
 
                               {/* Direct Price Edit Field */}
                               <div className="flex items-center gap-2 mt-2">
-                                <span className="text-xs text-amber-400 font-bold">السعر:</span>
+                                <span className="text-xs text-rose-400 font-bold">السعر:</span>
                                 <div className="relative flex items-center max-w-[120px]">
                                   <input
                                     type="number"
@@ -653,7 +653,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                                     onChange={(e) =>
                                       handlePriceChange(dish.id, Number(e.target.value))
                                     }
-                                    className="w-full py-1 px-2 pr-7 rounded-lg bg-black/50 border border-white/15 focus:border-amber-400 text-xs font-mono font-black text-amber-300 focus:outline-hidden"
+                                    className="w-full py-1 px-2 pr-7 rounded-lg bg-black/50 border border-white/15 focus:border-rose-400 text-xs font-mono font-black text-rose-300 focus:outline-hidden"
                                   />
                                   <span className="absolute right-2 text-[10px] text-stone-400 font-bold pointer-events-none">
                                     ج.م
@@ -679,7 +679,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                                     onChange={(e) =>
                                       handleSizePriceChange(dish.id, szIdx, Number(e.target.value))
                                     }
-                                    className="w-14 py-0.5 px-1 rounded bg-black/60 border border-white/10 text-amber-300 font-mono text-center text-[10px] focus:outline-hidden"
+                                    className="w-14 py-0.5 px-1 rounded bg-black/60 border border-white/10 text-rose-300 font-mono text-center text-[10px] focus:outline-hidden"
                                   />
                                   <span className="text-stone-500">ج.م</span>
                                 </div>
@@ -709,7 +709,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                                 onClick={() => handleToggleSteam(dish.id)}
                                 className={`p-1.5 rounded-lg text-[10px] transition-colors cursor-pointer ${
                                   dish.hasSteam
-                                    ? 'bg-amber-500/15 text-amber-400 border border-amber-500/20'
+                                    ? 'bg-rose-500/15 text-rose-400 border border-rose-500/20'
                                     : 'bg-white/5 text-stone-500'
                                 }`}
                                 title="تأثير البخار المتصاعد"
@@ -750,7 +750,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                 {activeTab === 'add' && (
                   <div className="max-w-2xl mx-auto p-5 rounded-3xl bg-[#1a1613] border border-white/5">
                     <h3 className="text-base font-black text-white pb-3 border-b border-white/10 flex items-center gap-2">
-                      <Plus className="w-4 h-4 text-amber-400" />
+                      <Plus className="w-4 h-4 text-rose-400" />
                       <span>إضافة صنف جديد لمنيو السلطان محمود</span>
                     </h3>
 
@@ -773,7 +773,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                             placeholder="مثال: طاجن جمبري اسكندراني"
                             value={newDish.name}
                             onChange={(e) => setNewDish({ ...newDish, name: e.target.value })}
-                            className="w-full p-2.5 rounded-xl bg-black/40 border border-white/10 text-white focus:outline-hidden focus:border-amber-500"
+                            className="w-full p-2.5 rounded-xl bg-black/40 border border-white/10 text-white focus:outline-hidden focus:border-rose-500"
                           />
                         </div>
 
@@ -786,7 +786,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                             placeholder="Alexandrian Shrimp Casserole"
                             value={newDish.nameEn}
                             onChange={(e) => setNewDish({ ...newDish, nameEn: e.target.value })}
-                            className="w-full p-2.5 rounded-xl bg-black/40 border border-white/10 text-white focus:outline-hidden focus:border-amber-500 text-left"
+                            className="w-full p-2.5 rounded-xl bg-black/40 border border-white/10 text-white focus:outline-hidden focus:border-rose-500 text-left"
                             dir="ltr"
                           />
                         </div>
@@ -803,7 +803,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                                 branch: e.target.value as 'seafood' | 'syrian',
                               })
                             }
-                            className="w-full p-2.5 rounded-xl bg-black/40 border border-white/10 text-white focus:outline-hidden focus:border-amber-500"
+                            className="w-full p-2.5 rounded-xl bg-black/40 border border-white/10 text-white focus:outline-hidden focus:border-rose-500"
                           >
                             <option value="seafood">قسم الأسماك والبحريات</option>
                             <option value="syrian">القسم السوري والمشويات</option>
@@ -821,7 +821,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                             onChange={(e) =>
                               setNewDish({ ...newDish, price: Number(e.target.value) })
                             }
-                            className="w-full p-2.5 rounded-xl bg-black/40 border border-white/10 text-amber-400 font-mono font-bold focus:outline-hidden focus:border-amber-500"
+                            className="w-full p-2.5 rounded-xl bg-black/40 border border-white/10 text-rose-300 font-mono font-bold focus:outline-hidden focus:border-rose-500"
                           />
                         </div>
 
@@ -835,7 +835,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                             onChange={(e) =>
                               setNewDish({ ...newDish, prepTimeMinutes: Number(e.target.value) })
                             }
-                            className="w-full p-2.5 rounded-xl bg-black/40 border border-white/10 text-white focus:outline-hidden focus:border-amber-500"
+                            className="w-full p-2.5 rounded-xl bg-black/40 border border-white/10 text-white focus:outline-hidden focus:border-rose-500"
                           />
                         </div>
                       </div>
@@ -847,7 +847,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                           placeholder="وصف مشهي للطبق والمكونات والتتبيلة..."
                           value={newDish.description}
                           onChange={(e) => setNewDish({ ...newDish, description: e.target.value })}
-                          className="w-full p-2.5 rounded-xl bg-black/40 border border-white/10 text-white focus:outline-hidden focus:border-amber-500"
+                          className="w-full p-2.5 rounded-xl bg-black/40 border border-white/10 text-white focus:outline-hidden focus:border-rose-500"
                         />
                       </div>
 
@@ -859,7 +859,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                             placeholder="رابط الصورة أو اختر صورة من جهازك..."
                             value={newDish.image}
                             onChange={(e) => setNewDish({ ...newDish, image: e.target.value })}
-                            className="flex-1 p-2.5 rounded-xl bg-black/40 border border-white/10 text-white text-xs focus:outline-hidden focus:border-amber-500 text-left"
+                            className="flex-1 p-2.5 rounded-xl bg-black/40 border border-white/10 text-white text-xs focus:outline-hidden focus:border-rose-500 text-left"
                             dir="ltr"
                           />
                           <label className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold cursor-pointer transition-colors shrink-0">
@@ -877,7 +877,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                       <div className="pt-2">
                         <button
                           type="submit"
-                          className="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-black text-sm shadow-xl shadow-amber-500/20 transition-transform active:scale-98 cursor-pointer"
+                          className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#881337] to-rose-700 hover:from-[#9f1239] hover:to-rose-600 text-white font-black text-sm shadow-xl shadow-rose-950/40 transition-transform active:scale-98 cursor-pointer"
                         >
                           نشر الصنف الجديد في القائمة فوراً
                         </button>
@@ -911,19 +911,19 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                       {/* Stat grid */}
                       <div className="grid grid-cols-3 gap-3 pt-2">
                         <div className="p-3 rounded-2xl bg-black/40 border border-white/5 text-center">
-                          <span className="text-xl font-mono font-black text-amber-400 block">
+                          <span className="text-xl font-mono font-black text-rose-400 block">
                             {localDishes.length}
                           </span>
                           <span className="text-[11px] text-stone-400">إجمالي الأصناف</span>
                         </div>
                         <div className="p-3 rounded-2xl bg-black/40 border border-white/5 text-center">
-                          <span className="text-xl font-mono font-black text-cyan-400 block">
+                          <span className="text-xl font-mono font-black text-rose-300 block">
                             {localDishes.filter((d) => d.branch === 'seafood').length}
                           </span>
                           <span className="text-[11px] text-stone-400">بحريات</span>
                         </div>
                         <div className="p-3 rounded-2xl bg-black/40 border border-white/5 text-center">
-                          <span className="text-xl font-mono font-black text-red-400 block">
+                          <span className="text-xl font-mono font-black text-rose-400 block">
                             {localDishes.filter((d) => d.branch === 'syrian').length}
                           </span>
                           <span className="text-[11px] text-stone-400">سوري ومشويات</span>
@@ -936,7 +936,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                       {/* Export */}
                       <div className="p-4 rounded-2xl bg-[#1a1613] border border-white/5 flex flex-col justify-between space-y-3">
                         <div>
-                          <div className="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center mb-2">
+                          <div className="w-9 h-9 rounded-xl bg-rose-950/40 text-rose-400 flex items-center justify-center mb-2">
                             <Download className="w-4 h-4" />
                           </div>
                           <h5 className="text-xs font-bold text-white">تصدير نسخة احتياطية (JSON)</h5>
@@ -947,7 +947,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                         <button
                           type="button"
                           onClick={handleExportDatabase}
-                          className="w-full py-2 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-md"
+                          className="w-full py-2 px-3 rounded-xl bg-[#881337] hover:bg-[#9f1239] text-white text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-md"
                         >
                           <Download className="w-3.5 h-3.5" />
                           <span>تحميل النسخة الاحتياطية</span>
@@ -957,7 +957,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                       {/* Import */}
                       <div className="p-4 rounded-2xl bg-[#1a1613] border border-white/5 flex flex-col justify-between space-y-3">
                         <div>
-                          <div className="w-9 h-9 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center mb-2">
+                          <div className="w-9 h-9 rounded-xl bg-rose-950/40 text-rose-400 flex items-center justify-center mb-2">
                             <Upload className="w-4 h-4" />
                           </div>
                           <h5 className="text-xs font-bold text-white">استرجاع نسخة احتياطية</h5>
@@ -979,9 +979,9 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                     </div>
 
                     {/* Restore Factory Defaults Card */}
-                    <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="p-4 rounded-2xl bg-rose-950/30 border border-rose-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-rose-950/50 text-rose-400 flex items-center justify-center shrink-0">
                           <RotateCcw className="w-5 h-5" />
                         </div>
                         <div>
@@ -997,7 +997,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                           playReelSound();
                           setIsConfirmResetOpen(true);
                         }}
-                        className="py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 text-xs font-black flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md shrink-0 active:scale-95"
+                        className="py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#881337] to-rose-700 hover:from-[#9f1239] hover:to-rose-600 text-white text-xs font-black flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md shrink-0 active:scale-95"
                       >
                         <RotateCcw className="w-4 h-4" />
                         <span>استعادة المنيو الآن</span>
@@ -1019,9 +1019,9 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 exit={{ scale: 0.9, opacity: 0, y: 10 }}
                 transition={{ type: 'spring', stiffness: 500, damping: 25 }}
-                className="w-full max-w-md p-6 rounded-3xl bg-[#1e1916] border border-amber-500/40 shadow-2xl text-center space-y-4 relative z-70"
+                className="w-full max-w-md p-6 rounded-3xl bg-[#1e1916] border border-rose-500/40 shadow-2xl text-center space-y-4 relative z-70"
               >
-                <div className="w-14 h-14 mx-auto rounded-2xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center shadow-lg shadow-amber-500/10">
+                <div className="w-14 h-14 mx-auto rounded-2xl bg-rose-950/40 border border-rose-500/40 text-rose-400 flex items-center justify-center shadow-lg shadow-rose-950/30">
                   <RotateCcw className="w-7 h-7 animate-spin-reverse" />
                 </div>
                 <div>
@@ -1034,7 +1034,7 @@ export const AdminModal: React.FC<AdminModalProps> = ({
                   <button
                     type="button"
                     onClick={handleConfirmResetDefaults}
-                    className="flex-1 py-3 px-4 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-black text-xs shadow-lg cursor-pointer transition-all active:scale-95"
+                    className="flex-1 py-3 px-4 rounded-2xl bg-gradient-to-r from-[#881337] to-rose-700 hover:from-[#9f1239] hover:to-rose-600 text-white font-black text-xs shadow-lg cursor-pointer transition-all active:scale-95"
                   >
                     نعم، استعادة المنيو فوراً
                   </button>

@@ -319,6 +319,9 @@ export default function App() {
         <Hero
           onSelectCategory={handleSelectStoryCategory}
           activeCategory={selectedCategory}
+          onSelectBranch={setActiveBranch}
+          onExploreMenu={() => handleOpenFullMenu()}
+          onOpenFeastWheel={() => setIsFeastWheelOpen(true)}
         />
 
         {/* 2-Column Product Grid with High-Speed Converging Entrance */}

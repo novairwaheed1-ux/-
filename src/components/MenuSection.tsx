@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Fish, Flame, CheckCircle2, ChevronDown, Sparkles, ChevronLeft } from 'lucide-react';
+import { Fish, Flame, CheckCircle2, ChevronDown, Sparkles, ChevronLeft, Waves } from 'lucide-react';
 import { DishItem, BranchType } from '../types';
 import { FoodCard } from './FoodCard';
 import { playReelSound } from '../utils/audio';
@@ -103,8 +103,8 @@ export const MenuSection: React.FC<MenuSectionProps> = React.memo(({
             onClick={() => handleSelectBranchAndScroll('seafood')}
             className={`group relative overflow-hidden rounded-3xl p-4 sm:p-5 transition-all duration-200 cursor-pointer border-2 select-none text-right flex flex-col justify-between min-h-[145px] sm:min-h-[160px] active:scale-[0.98] transform-gpu ${
               currentBranch === 'seafood'
-                ? 'bg-gradient-to-l from-[#082f49] via-[#0c4a6e] to-[#075985] border-cyan-400 text-white shadow-md shadow-cyan-950/20 ring-2 ring-cyan-400/30'
-                : 'bg-white dark:bg-stone-900 hover:bg-cyan-50/40 dark:hover:bg-cyan-950/30 border-stone-200 dark:border-stone-800 hover:border-cyan-300 dark:hover:border-cyan-700/60 text-stone-900 dark:text-stone-100 shadow-xs'
+                ? 'bg-gradient-to-l from-[#041d3b] via-[#0b3c6d] to-[#052449] border-sky-400 text-white shadow-xl shadow-sky-950/40 ring-2 ring-sky-400/50'
+                : 'bg-sky-50/80 dark:bg-[#071a33] hover:bg-sky-100/90 dark:hover:bg-[#0c2a52] border-sky-300 dark:border-sky-800/80 hover:border-sky-400 dark:hover:border-sky-600 text-stone-900 dark:text-stone-100 shadow-xs'
             }`}
           >
             {/* Background Subtle Watermark Dish Image */}
@@ -118,8 +118,8 @@ export const MenuSection: React.FC<MenuSectionProps> = React.memo(({
               <div
                 className={`absolute inset-0 ${
                   currentBranch === 'seafood'
-                    ? 'bg-gradient-to-r from-transparent to-[#0c4a6e]'
-                    : 'bg-gradient-to-r from-transparent to-white dark:to-stone-900'
+                    ? 'bg-gradient-to-r from-transparent to-[#0b3c6d]'
+                    : 'bg-gradient-to-r from-transparent to-sky-50/90 dark:to-[#071a33]'
                 }`}
               />
             </div>
@@ -129,8 +129,8 @@ export const MenuSection: React.FC<MenuSectionProps> = React.memo(({
               <div
                 className={`w-11 h-11 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center transition-transform duration-200 group-hover:scale-105 shadow-xs ${
                   currentBranch === 'seafood'
-                    ? 'bg-cyan-400 text-stone-950 font-black'
-                    : 'bg-cyan-100 dark:bg-cyan-950/70 text-cyan-800 dark:text-cyan-300'
+                    ? 'bg-sky-500 text-white font-black shadow-md shadow-sky-950/50'
+                    : 'bg-sky-200 dark:bg-sky-900/80 text-sky-800 dark:text-sky-200'
                 }`}
               >
                 <Fish className="w-6 h-6 sm:w-6.5 sm:h-6.5" />
@@ -138,12 +138,12 @@ export const MenuSection: React.FC<MenuSectionProps> = React.memo(({
 
               <div className="flex items-center gap-1.5">
                 {currentBranch === 'seafood' ? (
-                  <span className="px-3 py-1 rounded-full bg-cyan-400/25 border border-cyan-300/40 text-cyan-200 text-xs font-black flex items-center gap-1 shadow-xs">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-cyan-300" />
+                  <span className="px-3 py-1 rounded-full bg-sky-400/25 border border-sky-300/40 text-sky-200 text-xs font-black flex items-center gap-1 shadow-xs">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-sky-300" />
                     <span>المنيو المعروض حالياً</span>
                   </span>
                 ) : (
-                  <span className="px-3 py-1 rounded-full bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 text-xs font-bold group-hover:text-cyan-800 dark:group-hover:text-cyan-300 group-hover:border-cyan-300 dark:group-hover:border-cyan-700 transition-colors">
+                  <span className="px-3 py-1 rounded-full bg-sky-100 dark:bg-sky-900/60 border border-sky-300/50 dark:border-sky-700/60 text-sky-800 dark:text-sky-200 text-xs font-bold group-hover:text-sky-900 dark:group-hover:text-white transition-colors">
                     اضغط لعرض المنيو
                   </span>
                 )}
@@ -152,12 +152,22 @@ export const MenuSection: React.FC<MenuSectionProps> = React.memo(({
 
             {/* Middle: Titles & Details */}
             <div className="relative z-10 mt-2.5">
-              <h3 className="text-lg sm:text-xl font-black tracking-tight">
-                منيو وأسعار الأسماك والبحريات
+              <h3 className="text-lg sm:text-xl font-black tracking-tight flex items-center gap-2 flex-wrap">
+                <span className={currentBranch === 'seafood' ? 'text-white drop-shadow-sm font-black' : 'text-sky-800 dark:text-sky-300 font-black'}>
+                  منيو الأسماك والبحريات
+                </span>
+                <span className={`inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                  currentBranch === 'seafood'
+                    ? 'bg-sky-400/25 text-sky-100 border border-sky-300/40'
+                    : 'bg-sky-100 dark:bg-sky-900/60 text-sky-800 dark:text-sky-200 border border-sky-300/40'
+                }`}>
+                  <Waves className="w-3 h-3 text-sky-400" />
+                  <span>طازج من البحر</span>
+                </span>
               </h3>
               <p
                 className={`text-xs mt-1 font-medium leading-relaxed ${
-                  currentBranch === 'seafood' ? 'text-cyan-100/90' : 'text-stone-500 dark:text-stone-400'
+                  currentBranch === 'seafood' ? 'text-sky-100' : 'text-sky-900/70 dark:text-sky-200/70'
                 }`}
               >
                 طواجن سي فود • جمبري جامبو • فيليه مقرمش • كبدة ومخ
@@ -165,17 +175,17 @@ export const MenuSection: React.FC<MenuSectionProps> = React.memo(({
             </div>
 
             {/* Bottom: Direct Downward Indicator to Browse Below */}
-            <div className="relative z-10 mt-3 pt-2 border-t border-black/5 dark:border-white/10 flex items-center justify-between text-xs">
+            <div className="relative z-10 mt-3 pt-2 border-t border-sky-400/20 dark:border-sky-700/30 flex items-center justify-between text-xs">
               <span
                 className={`flex items-center gap-1 text-[11px] font-black ${
-                  currentBranch === 'seafood' ? 'text-cyan-200' : 'text-stone-600 dark:text-stone-400 group-hover:text-cyan-700 dark:group-hover:text-cyan-300'
+                  currentBranch === 'seafood' ? 'text-sky-200' : 'text-sky-700 dark:text-sky-300'
                 }`}
               >
                 <span>{currentBranch === 'seafood' ? 'تصفح الأصناف والأسعار بالأسفل' : 'انقر للانتقال للمنيو والأسعار'}</span>
               </span>
               <div
                 className={`w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-200 group-hover:translate-y-0.5 ${
-                  currentBranch === 'seafood' ? 'bg-cyan-400/30 text-cyan-200' : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300'
+                  currentBranch === 'seafood' ? 'bg-sky-400/30 text-sky-200' : 'bg-sky-100 dark:bg-sky-900/60 text-sky-700 dark:text-sky-300'
                 }`}
               >
                 <ChevronDown className="w-4 h-4" />
@@ -285,18 +295,14 @@ export const MenuSection: React.FC<MenuSectionProps> = React.memo(({
               }}
               className={`group w-full relative overflow-hidden rounded-2xl py-2.5 px-4 flex items-center justify-between gap-3 border-2 transition-all duration-200 active:scale-[0.99] cursor-pointer shadow-xs ${
                 currentBranch === 'seafood'
-                  ? 'bg-gradient-to-r from-[#03232b] via-[#073641] to-[#041f26] border-cyan-400/50 text-white hover:border-cyan-300'
+                  ? 'bg-gradient-to-r from-[#2c0510] via-[#480a1c] to-[#20030b] border-rose-500/50 text-white hover:border-rose-400'
                   : 'bg-gradient-to-r from-[#380914] via-[#520d1c] to-[#2e050f] border-rose-500/50 text-white hover:border-rose-400'
               }`}
             >
               {/* Right Side in RTL: Title "منيو العائلات" */}
               <div className="flex items-center gap-2.5">
                 <div
-                  className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 shadow-xs ${
-                    currentBranch === 'seafood'
-                      ? 'bg-cyan-400 text-stone-950 font-black'
-                      : 'bg-[#9f1239] text-white font-black'
-                  }`}
+                  className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 shadow-xs bg-[#881337] text-white font-black"
                 >
                   <Sparkles className="w-4 h-4" />
                 </div>
@@ -338,7 +344,11 @@ export const MenuSection: React.FC<MenuSectionProps> = React.memo(({
                   <motion.div
                     layoutId="activeCategorySlider"
                     transition={{ type: 'spring', stiffness: 550, damping: 28 }}
-                    className="absolute inset-0 rounded-full bg-[#7a172b] dark:bg-[#9f1239] shadow-xs -z-10"
+                    className={`absolute inset-0 rounded-full shadow-xs -z-10 ${
+                      currentBranch === 'seafood'
+                        ? 'bg-sky-600 shadow-sky-900/30'
+                        : 'bg-[#7a172b] dark:bg-[#9f1239]'
+                    }`}
                   />
                 )}
                 <span>{cat.label}</span>
@@ -350,9 +360,13 @@ export const MenuSection: React.FC<MenuSectionProps> = React.memo(({
         {/* Section Header: Category Title on Right, "عرض كافة الأصناف" on Left */}
         <div className="flex items-center justify-between mb-3 px-1">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#7a172b] dark:bg-[#fb7185]" />
+            <span className={`w-2.5 h-2.5 rounded-full ${currentBranch === 'seafood' ? 'bg-sky-500 shadow-xs shadow-sky-400' : 'bg-[#7a172b] dark:bg-[#fb7185]'}`} />
             <h2 className="text-sm sm:text-base font-black text-stone-900 dark:text-white">
-              {currentBranch === 'seafood' ? 'مأكولات وبحريات السلطان' : 'مشويات وشاورما سورية'}
+              {currentBranch === 'seafood' ? (
+                <span className="text-sky-600 dark:text-sky-400 text-base font-black">منيو الأسماك والبحريات</span>
+              ) : (
+                'مشويات وشاورما سورية'
+              )}
             </h2>
           </div>
 
@@ -363,7 +377,11 @@ export const MenuSection: React.FC<MenuSectionProps> = React.memo(({
                 playReelSound();
                 handleCategoryUpdate('all');
               }}
-              className="text-xs font-black text-[#7a172b] dark:text-[#fb7185] hover:underline cursor-pointer"
+              className={`text-xs font-black hover:underline cursor-pointer ${
+                currentBranch === 'seafood'
+                  ? 'text-sky-600 dark:text-sky-400'
+                  : 'text-[#7a172b] dark:text-[#fb7185]'
+              }`}
             >
               عرض كافة الأصناف
             </button>

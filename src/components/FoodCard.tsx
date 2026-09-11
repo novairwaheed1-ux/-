@@ -102,7 +102,9 @@ export const FoodCard: React.FC<FoodCardProps> = React.memo(({
 
         {/* Content Details */}
         <div className="flex flex-col flex-1 z-10 mt-1">
-          <h3 className="text-xs sm:text-sm font-black text-stone-900 dark:text-stone-100 tracking-tight hover:text-[#7a172b] dark:hover:text-[#fb7185] transition-colors line-clamp-1">
+          <h3 className={`text-xs sm:text-sm font-black text-stone-900 dark:text-stone-100 tracking-tight transition-colors line-clamp-1 ${
+            isSeafood ? 'hover:text-sky-600 dark:hover:text-sky-400' : 'hover:text-[#7a172b] dark:hover:text-[#fb7185]'
+          }`}>
             {dish.name}
           </h3>
 
@@ -124,7 +126,9 @@ export const FoodCard: React.FC<FoodCardProps> = React.memo(({
                   }}
                   className={`px-1.5 py-0.5 rounded-md text-[9px] font-black transition-all cursor-pointer ${
                     selectedSizeIndex === idx
-                      ? 'bg-[#7a172b] dark:bg-[#9f1239] text-white'
+                      ? isSeafood
+                        ? 'bg-sky-600 text-white'
+                        : 'bg-[#7a172b] dark:bg-[#9f1239] text-white'
                       : 'bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300'
                   }`}
                 >
@@ -157,6 +161,8 @@ export const FoodCard: React.FC<FoodCardProps> = React.memo(({
               className={`flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-black transition-all shadow-xs cursor-pointer select-none active:scale-95 ${
                 isAddedAnim
                   ? 'bg-emerald-600 text-white'
+                  : isSeafood
+                  ? 'bg-sky-600 hover:bg-sky-700 text-white shadow-sm shadow-sky-900/20'
                   : 'bg-[#7a172b] hover:bg-[#641220] dark:bg-[#9f1239] dark:hover:bg-[#881337] text-white'
               }`}
             >

@@ -49,3 +49,35 @@ export function playReelSound(volume = 0.05) {
     // Graceful fallback
   }
 }
+
+/**
+ * Plays a luxurious, subtle, soft golden bell chime for celebratory moments
+ * (like adding a family feast to cart or achieving something special).
+ */
+export function playCelebrationChime() {
+  try {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+    [587.33, 880].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + i * 0.05);
+
+      gain.gain.setValueAtTime(0.0001, now + i * 0.05);
+      gain.gain.linearRampToValueAtTime(0.04, now + i * 0.05 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.05 + 0.45);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(now + i * 0.05);
+      osc.stop(now + i * 0.05 + 0.5);
+    });
+  } catch {
+    // Graceful fallback
+  }
+}

@@ -150,6 +150,26 @@ html, body {
   animation: cartShake 0.75s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 
+/* Ultra-lightweight Specular Light Shimmer Keyframe */
+@keyframes heroShimmer {
+  0% {
+    transform: translate(-60%, -60%) rotate(25deg);
+  }
+  40%, 100% {
+    transform: translate(60%, 60%) rotate(25deg);
+  }
+}
+
+/* Soft gold rim sweep */
+@keyframes goldRimShimmer {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 /* Subtle Olive Delivery Card Styling */
 .bg-light-olive {
   background-color: #edf3ec;

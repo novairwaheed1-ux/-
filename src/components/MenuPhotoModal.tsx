@@ -170,7 +170,7 @@ export const MenuPhotoModal: React.FC<MenuPhotoModalProps> = ({
           {/* Header */}
           <div className="p-3.5 sm:p-4 bg-[#231811] text-white border-b border-[#3d2a1e] flex items-center justify-between gap-3">
             <div className="flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-amber-400 p-0.5 bg-amber-500 shadow-md">
+              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-rose-400 p-0.5 bg-[#881337] shadow-md">
                 <img
                   src={sultanChefLogoImg}
                   alt="لوجو السلطان محمود"
@@ -179,7 +179,7 @@ export const MenuPhotoModal: React.FC<MenuPhotoModalProps> = ({
                 />
               </div>
               <div>
-                <h3 className="text-sm sm:text-base font-black text-amber-300">
+                <h3 className="text-sm sm:text-base font-black text-rose-200">
                   لوحات المنيو المصورة المعتمدة (الألواح الأربعة)
                 </h3>
                 <p className="text-[11px] text-stone-300">
@@ -211,8 +211,8 @@ export const MenuPhotoModal: React.FC<MenuPhotoModalProps> = ({
                 className={`whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
                   currentBoardIndex === idx
                     ? board.branch === 'seafood'
-                      ? 'bg-amber-500 text-stone-950 shadow-md scale-102'
-                      : 'bg-orange-500 text-white shadow-md scale-102'
+                      ? 'bg-sky-700 text-white shadow-md scale-102'
+                      : 'bg-[#881337] text-white shadow-md scale-102'
                     : 'text-stone-400 hover:text-white bg-white/5'
                 }`}
               >
@@ -292,7 +292,7 @@ export const MenuPhotoModal: React.FC<MenuPhotoModalProps> = ({
                   src={currentBoard.image}
                   alt={currentBoard.title}
                   referrerPolicy="no-referrer"
-                  className="rounded-2xl max-h-[62vh] sm:max-h-[70vh] object-contain shadow-2xl border border-amber-500/30"
+                  className="rounded-2xl max-h-[62vh] sm:max-h-[70vh] object-contain shadow-2xl border border-rose-900/30"
                 />
               </motion.div>
             </div>
@@ -319,23 +319,23 @@ export const MenuPhotoModal: React.FC<MenuPhotoModalProps> = ({
                       <span className="text-xs font-bold text-[#231811] block">
                         {item.name}
                       </span>
-                      <span className="text-[11px] font-mono font-black text-amber-700">
+                      <span className="text-[11px] font-mono font-black text-rose-900">
                         {item.price} ج.م
                       </span>
                     </div>
 
                     <button
                       onClick={() => handleQuickAdd(item.name, item.price, currentBoard.branch)}
-                      className="px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 active:scale-95 text-stone-950 text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+                      className="px-2.5 py-1 rounded-lg bg-[#7a172b] hover:bg-[#641220] active:scale-95 text-white text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
                     >
                       {addedItem === item.name ? (
                         <>
-                          <Check className="w-3 h-3 text-stone-950" />
+                          <Check className="w-3 h-3 text-white" />
                           <span>تم!</span>
                         </>
                       ) : (
                         <>
-                          <ShoppingBag className="w-3 h-3 text-stone-950" />
+                          <ShoppingBag className="w-3 h-3 text-white" />
                           <span>+ سلة</span>
                         </>
                       )}
@@ -358,7 +358,7 @@ export const MenuPhotoModal: React.FC<MenuPhotoModalProps> = ({
 
                 <a
                   href={RESTAURANT_INFO.callLink}
-                  className="p-2 rounded-xl bg-[#231811] hover:bg-[#38261b] text-amber-300 transition-colors"
+                  className="p-2 rounded-xl bg-[#231811] hover:bg-[#38261b] text-rose-300 transition-colors"
                   title="اتصال مباشر"
                 >
                   <Phone className="w-4 h-4" />

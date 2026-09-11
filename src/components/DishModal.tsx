@@ -130,19 +130,27 @@ export const DishModal: React.FC<DishModalProps> = ({
             </button>
 
             {/* Top Dish Visual Stage */}
-            <div className="relative w-full h-64 sm:h-72 flex items-center justify-center overflow-hidden bg-radial from-[#2a0e16] via-[#17080d] to-[#0d0407] border-b border-white/10">
+            <div className={`relative w-full h-64 sm:h-72 flex items-center justify-center overflow-hidden border-b border-white/10 ${
+              isSeafood
+                ? 'bg-radial from-[#072448] via-[#051a36] to-[#020e1e]'
+                : 'bg-radial from-[#2a0e16] via-[#17080d] to-[#0d0407]'
+            }`}>
               {/* White & Ambient Luminous Halo Light Radiating strictly behind plate */}
               <div
                 className="absolute inset-0 pointer-events-none opacity-80 blur-3xl"
                 style={{
                   background: isSeafood
-                    ? 'radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, rgba(6, 182, 212, 0.35) 40%, transparent 80%)'
+                    ? 'radial-gradient(circle, rgba(255, 255, 255, 0.45) 0%, rgba(14, 165, 233, 0.35) 40%, transparent 80%)'
                     : 'radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, rgba(159, 18, 57, 0.35) 40%, transparent 80%)',
                 }}
               />
 
               {/* Pedestal Base Ring */}
-              <div className="absolute bottom-6 w-56 h-12 rounded-full bg-gradient-to-r from-transparent via-[#881337]/25 to-transparent blur-md" />
+              <div className={`absolute bottom-6 w-56 h-12 rounded-full blur-md ${
+                isSeafood
+                  ? 'bg-gradient-to-r from-transparent via-sky-400/30 to-transparent'
+                  : 'bg-gradient-to-r from-transparent via-[#881337]/25 to-transparent'
+              }`} />
 
               {/* Rising Steam Effect */}
               {dish.hasSteam && (
@@ -181,11 +189,11 @@ export const DishModal: React.FC<DishModalProps> = ({
                 <span
                   className={`px-3 py-1 rounded-full text-xs font-black border backdrop-blur-md shadow-md ${
                     isSeafood
-                      ? 'bg-cyan-950/80 text-cyan-300 border-cyan-500/50'
+                      ? 'bg-sky-950/90 text-sky-200 border-sky-500/50'
                       : 'bg-[#4c0519]/90 text-rose-200 border-rose-500/50'
                   }`}
                 >
-                  {isSeafood ? 'فرع الأسماك والبحريات' : 'الفرع السوري والمشويات'}
+                  {isSeafood ? 'منيو الأسماك والبحريات' : 'الفرع السوري والمشويات'}
                 </span>
               </div>
             </div>
@@ -197,7 +205,7 @@ export const DishModal: React.FC<DishModalProps> = ({
                   <h2 className="text-xl sm:text-2xl font-black text-white">
                     {dish.name}
                   </h2>
-                  <p className="text-xs text-rose-300 font-bold tracking-wide mt-0.5">
+                  <p className={`text-xs font-bold tracking-wide mt-0.5 ${isSeafood ? 'text-sky-300' : 'text-rose-300'}`}>
                     {dish.badgeText || (dish.branch === 'seafood' ? 'طازج من البحر يومياً' : 'مأكولات ومشويات سورية أصيلة')}
                   </p>
                 </div>
@@ -389,7 +397,7 @@ export const DishModal: React.FC<DishModalProps> = ({
                     addedSuccess
                       ? 'bg-emerald-600'
                       : isSeafood
-                      ? 'bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500'
+                      ? 'bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 shadow-sky-950/40'
                       : 'bg-gradient-to-r from-[#4c0519] to-[#881337] hover:from-[#5c0720] hover:to-[#9f1239]'
                   }`}
                 >

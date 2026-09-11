@@ -8,6 +8,7 @@ import {
   Users,
   Award,
   Check,
+  Sparkles,
 } from 'lucide-react';
 import { BranchType, DishItem } from '../types';
 import {
@@ -15,7 +16,7 @@ import {
   SYRIAN_FAMILY_FEASTS,
   FamilyFeastItem,
 } from '../data/familyFeasts';
-import { playReelSound } from '../utils/audio';
+import { playReelSound, playCelebrationChime } from '../utils/audio';
 
 interface FamilyFeastWheelModalProps {
   isOpen: boolean;
@@ -288,11 +289,11 @@ export const FamilyFeastWheelModal: React.FC<FamilyFeastWheelModalProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, totalDishes, onClose]);
 
-  // Add to cart with tactile feedback
+  // Add to cart with tactile feedback and celebration chime
   const handleAdd = () => {
-    playReelSound();
+    playCelebrationChime();
     setIsAddedAnim(true);
-    setTimeout(() => setIsAddedAnim(false), 900);
+    setTimeout(() => setIsAddedAnim(false), 1200);
     onAddToCart(activeDish);
   };
 
@@ -326,7 +327,7 @@ export const FamilyFeastWheelModal: React.FC<FamilyFeastWheelModalProps> = ({
                 onClick={() => handleBranchSwitch('seafood')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   currentBranch === 'seafood'
-                    ? 'bg-cyan-400 text-stone-950 shadow-md font-black'
+                    ? 'bg-[#9f1239] text-white shadow-md font-black'
                     : 'text-stone-300 hover:text-white'
                 }`}
               >
@@ -578,7 +579,7 @@ export const FamilyFeastWheelModal: React.FC<FamilyFeastWheelModalProps> = ({
                       {/* Fresh Hot Steam Ribbon for Front Active Dish */}
                       {isCenter && (
                         <div className="absolute -top-7 left-1/2 -translate-x-1/2 pointer-events-none flex items-center justify-center gap-1 opacity-70">
-                          <svg viewBox="0 0 44 24" className="w-11 h-6 text-amber-100/60">
+                          <svg viewBox="0 0 44 24" className="w-11 h-6 text-white/60">
                             <path
                               d="M 10,22 Q 14,14 10,8 Q 6,2 10,0"
                               fill="none"
@@ -669,12 +670,24 @@ export const FamilyFeastWheelModal: React.FC<FamilyFeastWheelModalProps> = ({
 
                         {/* Active Dish Ambient Aura Ring */}
                         {isCenter && (
-                          <div
-                            className="absolute -inset-1 rounded-full pointer-events-none animate-pulse"
-                            style={{
-                              border: `2px solid ${activeTheme.accent}`,
-                            }}
-                          />
+                          <>
+                            <div
+                              className="absolute -inset-1 rounded-full pointer-events-none animate-pulse"
+                              style={{
+                                border: `2px solid ${activeTheme.accent}`,
+                              }}
+                            />
+                            {/* Specular Light Shimmer Sweep on Platter Rim */}
+                            <div className="absolute -inset-1 rounded-full pointer-events-none opacity-40 overflow-hidden">
+                              <div
+                                className="w-full h-full"
+                                style={{
+                                  background: 'linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.85) 50%, transparent 60%)',
+                                  animation: 'heroShimmer 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite',
+                                }}
+                              />
+                            </div>
+                          </>
                         )}
 
                         {/* High-Definition Razor-Sharp Food Image */}
@@ -715,38 +728,53 @@ export const FamilyFeastWheelModal: React.FC<FamilyFeastWheelModalProps> = ({
 
           {/* Bottom Card: Pricing, Servings, Description & Add to Cart (Clean, Zero Buttons Clutter) */}
           <div className="relative z-30 px-4 sm:px-6 pb-4 sm:pb-6 pt-1 flex flex-col items-center text-center">
-            {/* Pricing & Serves Badges */}
-            <div className="flex flex-wrap items-center justify-center gap-2 mb-2">
+            {/* Pricing & Serves Badges with Spring Motion Transition */}
+            <motion.div
+              key={activeDish.id}
+              initial={{ scale: 0.92, opacity: 0.7 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: 'spring', stiffness: 380, damping: 26 }}
+              className="flex flex-wrap items-center justify-center gap-2 mb-2"
+            >
               <div className="px-3.5 py-1 rounded-xl bg-white/15 border border-white/20 text-white text-base sm:text-lg font-black tracking-tight shadow-sm">
                 <span>{activeDish.price.toLocaleString('ar-EG')}</span>
                 <span className="text-xs font-bold mr-1 text-rose-300">ج.م</span>
               </div>
 
               <div className="flex items-center gap-1 px-3 py-1 rounded-xl bg-black/50 border border-white/15 text-xs font-bold text-stone-200">
-                <Users className="w-3.5 h-3.5 text-cyan-300" />
+                <Users className="w-3.5 h-3.5 text-rose-300" />
                 <span>{activeDish.servesCount}</span>
               </div>
 
               {activeDish.savingsText && (
-                <div className="px-2.5 py-1 rounded-xl bg-emerald-500/25 border border-emerald-400/40 text-emerald-300 text-xs font-bold">
+                <div className="px-2.5 py-1 rounded-xl bg-emerald-500/25 border border-emerald-400/40 text-emerald-300 text-xs font-bold animate-pulse">
                   <span>{activeDish.savingsText}</span>
                 </div>
               )}
-            </div>
+            </motion.div>
 
             {/* Description of the feast */}
             <p className="text-xs sm:text-sm text-stone-200 line-clamp-2 max-w-lg mb-4 leading-relaxed">
               {activeDish.description}
             </p>
 
-            {/* Single Full-Width Add to Cart Button */}
-            <div className="w-full max-w-sm">
+            {/* Single Full-Width Add to Cart Button with Celebratory Sparkles */}
+            <div className="w-full max-w-sm relative">
+              {isAddedAnim && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 pointer-events-none flex items-center gap-2 text-amber-300 animate-bounce">
+                  <Sparkles className="w-4 h-4" />
+                  <span className="text-[11px] font-black bg-stone-900/90 text-amber-300 px-2 py-0.5 rounded-full border border-amber-400/40">
+                    أحلى اختيار للمائدة!
+                  </span>
+                  <Sparkles className="w-4 h-4" />
+                </div>
+              )}
               <button
                 type="button"
                 onClick={handleAdd}
                 className={`w-full py-3 px-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2 transition-all shadow-xl active:scale-98 cursor-pointer ${
                   isAddedAnim
-                    ? 'bg-emerald-500 text-white'
+                    ? 'bg-emerald-500 text-white shadow-emerald-900/50'
                     : 'bg-white hover:bg-stone-100 text-stone-950'
                 }`}
               >

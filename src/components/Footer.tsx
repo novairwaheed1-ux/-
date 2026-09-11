@@ -43,11 +43,11 @@ export const Footer: React.FC<FooterProps> = ({ onScrollToTop }) => {
 
             {/* Branches badges */}
             <div className="flex flex-wrap gap-1.5 pt-1">
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-cyan-950/60 text-cyan-300 border border-cyan-800/50 text-[10px] font-bold">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-[#4c0519]/70 text-rose-200 border border-rose-800/60 text-[10px] font-bold">
                 <Fish className="w-3 h-3" />
                 فرع الأسماك
               </span>
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-rose-950/60 text-rose-300 border border-rose-800/50 text-[10px] font-bold">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-[#58081a]/70 text-rose-200 border border-rose-800/60 text-[10px] font-bold">
                 <Flame className="w-3 h-3" />
                 الفرع السوري
               </span>
