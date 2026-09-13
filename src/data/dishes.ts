@@ -17,12 +17,9 @@ import syrianGarlicToumyaImg from '../assets/images/syrian_garlic_toumya_1788705
 import yellowBasmatiRiceImg from '../assets/images/yellow_basmati_rice_1788705252645.jpg';
 import crispyFrenchFriesImg from '../assets/images/crispy_french_fries_1788705268760.jpg';
 import grilledLambKoftaImg from '../assets/images/grilled_lamb_kofta_1788705287067.jpg';
-import seafoodCasseroleTajinImg from '../assets/images/seafood_casserole_tajin_1788705303519.jpg';
 import alexLiverPlateImg from '../assets/images/alex_liver_plate_1788715482607.jpg';
 import goldenCalamariImg from '../assets/images/golden_calamari_plate_1788715495928.jpg';
 import broastedChickenPlateImg from '../assets/images/broasted_chicken_plate_1788715515238.jpg';
-import cheeseHawawshiImg from '../assets/images/cheese_hawawshi_crisp_1788715536794.jpg';
-import creamySeafoodSoupImg from '../assets/images/creamy_seafood_soup_1788715551549.jpg';
 import arabicShawarmaBoxImg from '../assets/images/arabic_shawarma_box_1788715564948.jpg';
 import friedBrainDishImg from '../assets/images/fried_brain_dish_1788715593879.jpg';
 import crispyChickenStripsImg from '../assets/images/crispy_chicken_strips_1788715606861.jpg';
@@ -70,12 +67,9 @@ export {
   yellowBasmatiRiceImg,
   crispyFrenchFriesImg,
   grilledLambKoftaImg,
-  seafoodCasseroleTajinImg,
   alexLiverPlateImg,
   goldenCalamariImg,
   broastedChickenPlateImg,
-  cheeseHawawshiImg,
-  creamySeafoodSoupImg,
   arabicShawarmaBoxImg,
   friedBrainDishImg,
   crispyChickenStripsImg,
@@ -686,46 +680,7 @@ export const DEFAULT_DISHES: DishItem[] = [
     availableExtras: COMMON_EXTRAS,
   },
 
-  // 1.5 طواجن وشوربة بحري
-  {
-    id: 'dish-sf-tajin-seafood',
-    name: 'طاجن سي فود ملوكي بالجبنة',
-    nameEn: 'Royal Seafood Tajin',
-    branch: 'seafood',
-    category: 'casseroles',
-    price: 140,
-    description: 'طاجن فخار ساخن يغلي بقطع الجمبري والفيليه والكاليماري مع صوص الطماطم المسبك والجبنة الذائبة.',
-    image: seafoodCasseroleTajinImg,
-    badge: 'signature',
-    badgeText: 'طاجن فخار',
-    hasSteam: true,
-    spicyLevel: 2,
-    prepTimeMinutes: 20,
-    calories: 560,
-    ingredients: ['جمبري', 'فيليه سمك', 'كاليماري', 'صوص أحمر غني', 'موزاريلا'],
-    available: true,
-    availableExtras: COMMON_EXTRAS,
-  },
-  {
-    id: 'dish-sf-soup-creamy',
-    name: 'شوربة سي فود مخلية بالكريمة',
-    nameEn: 'Creamy Boneless Seafood Soup',
-    branch: 'seafood',
-    category: 'casseroles',
-    price: 90,
-    description: 'شوربة بحرية غنية بالكريمة اللباني وحبات الجمبري وقطع الفيليه والكاليماري بدون شوك.',
-    image: creamySeafoodSoupImg,
-    badge: 'bestseller',
-    badgeText: 'كريمة غنية',
-    hasSteam: true,
-    spicyLevel: 0,
-    prepTimeMinutes: 12,
-    calories: 340,
-    ingredients: ['جمبري مخلي', 'فيليه', 'كاليماري', 'كريمة طبخ فاخرة', 'كرفس وليمون'],
-    available: true,
-  },
-
-  // 1.6 سلطات ومشروبات بحري
+  // 1.5 سلطات ومشروبات بحري
   {
     id: 'dish-sf-salad-tahina',
     name: 'سلطة طحينة سمسم فاخرة',
@@ -2093,26 +2048,7 @@ export const DEFAULT_DISHES: DishItem[] = [
     availableExtras: COMMON_EXTRAS,
   },
 
-  // 2.9 حواوشي ومقبلات ومشروبات سوري
-  {
-    id: 'dish-syr-hawawshi-cheese',
-    name: 'حواوشي لحمة بلدي بالموزاريلا',
-    nameEn: 'Cheese Baladi Meat Hawawshi',
-    branch: 'syrian',
-    category: 'grills',
-    price: 55,
-    description: 'رغيف حواوشي مقرمش محشو باللحم البلدي المتبل والجبنة الموزاريلا السايحة.',
-    image: cheeseHawawshiImg,
-    badge: 'bestseller',
-    badgeText: 'لحم وموزاريلا',
-    hasSteam: true,
-    spicyLevel: 2,
-    prepTimeMinutes: 10,
-    calories: 480,
-    ingredients: ['لحم بلدي متبل', 'جبنة موزاريلا', 'عيش بلدي مقرمش', 'فلفل وتوابل'],
-    available: true,
-    availableExtras: COMMON_EXTRAS,
-  },
+  // 2.9 مقبلات ومشروبات سوري
   {
     id: 'dish-syr-toumya',
     name: 'تومية سورية أصلية كريمي',
@@ -2264,7 +2200,7 @@ export const DEFAULT_DISHES: DishItem[] = [
 ];
 
 // Local storage helper
-const STORAGE_KEY = 'sultan_mahmoud_dishes_v8_full_menu';
+const STORAGE_KEY = 'sultan_mahmoud_dishes_v9_strict_menu';
 
 export const getSavedDishes = (): DishItem[] => {
   try {

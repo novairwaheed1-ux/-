@@ -67,10 +67,9 @@ export const MenuSection: React.FC<MenuSectionProps> = React.memo(({
   // Sub-categories depending on branch
   const seafoodCategories = [
     { id: 'all', label: 'جميع الأصناف' },
-    { id: 'meals', label: 'وجبات وبحريات' },
+    { id: 'meals', label: 'وجبات وبحريات بالوزن' },
     { id: 'sandwiches', label: 'ساندوتشات كبدة وأسماك' },
-    { id: 'casseroles', label: 'طواجن وأرز' },
-    { id: 'appetizers', label: 'مقبلات وسلطات' },
+    { id: 'sides', label: 'أطباق أرز وسلطات ومشروبات' },
   ];
 
   const syrianCategories = [
