@@ -185,6 +185,52 @@ html, body {
   }
 }
 
+/* Periodic 5s Food Image Shimmer Sweep */
+@keyframes foodShimmerSweep {
+  0%, 75% {
+    transform: translateX(-150%) skewX(-20deg);
+    opacity: 0;
+  }
+  80% {
+    opacity: 0.85;
+  }
+  92% {
+    transform: translateX(180%) skewX(-20deg);
+    opacity: 0.85;
+  }
+  96%, 100% {
+    transform: translateX(200%) skewX(-20deg);
+    opacity: 0;
+  }
+}
+
+.animate-dish-shimmer {
+  animation: foodShimmerSweep 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Button pulse & wobble on add to cart */
+@keyframes btnAddPulse {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(0.92) rotate(-3deg);
+  }
+  50% {
+    transform: scale(1.12) rotate(3deg);
+  }
+  75% {
+    transform: scale(0.98) rotate(-1deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.animate-btn-pulse {
+  animation: btnAddPulse 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
 /* Soft gold rim sweep */
 @keyframes goldRimShimmer {
   0% {

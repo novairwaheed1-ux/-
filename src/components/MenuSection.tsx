@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Fish, Flame, CheckCircle2, ChevronDown, Sparkles, ChevronLeft, Waves } from 'lucide-react';
 import { DishItem, BranchType } from '../types';
 import { FoodCard } from './FoodCard';
+import { ScrollRevealItem } from './ScrollRevealItem';
 import { playReelSound } from '../utils/audio';
 import { grilledShrimpImg, shawarmaWrapImg } from '../data/dishes';
 
@@ -405,35 +406,40 @@ export const MenuSection: React.FC<MenuSectionProps> = React.memo(({
           className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3.5 transform-gpu"
         >
           {displayedDishes.map((dish, index) => (
-            <motion.div
+            <ScrollRevealItem
               key={dish.id}
-              variants={{
-                hidden: {
-                  opacity: 0,
-                  y: 18,
-                  scale: 0.96,
-                },
-                show: {
-                  opacity: 1,
-                  y: 0,
-                  scale: 1,
-                  transition: {
-                    type: 'spring',
-                    stiffness: 380,
-                    damping: 26,
-                    mass: 0.8,
-                  },
-                },
-              }}
+              delay={(index % 4) * 35}
               className="h-full flex flex-col"
             >
-              <FoodCard
-                dish={dish}
-                onAddToCart={onAddToCart}
-                onSelectDish={onSelectDish}
-                onOrderWhatsApp={onOrderWhatsApp}
-              />
-            </motion.div>
+              <motion.div
+                variants={{
+                  hidden: {
+                    opacity: 0,
+                    y: 18,
+                    scale: 0.96,
+                  },
+                  show: {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    transition: {
+                      type: 'spring',
+                      stiffness: 380,
+                      damping: 26,
+                      mass: 0.8,
+                    },
+                  },
+                }}
+                className="h-full flex flex-col"
+              >
+                <FoodCard
+                  dish={dish}
+                  onAddToCart={onAddToCart}
+                  onSelectDish={onSelectDish}
+                  onOrderWhatsApp={onOrderWhatsApp}
+                />
+              </motion.div>
+            </ScrollRevealItem>
           ))}
         </motion.div>
       </div>
