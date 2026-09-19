@@ -73,34 +73,38 @@ export class HighConcurrencyOrderEngine {
       // Graceful fallback for private browsing or quota limits
     }
 
-    // Build optimized WhatsApp message
-    let message = `*طلب جديد #${orderId}*%0A`;
-    message += `*مطاعم السلطان محمود*%0A%0A`;
-
-    if (payload.customerName) message += `*الاسم:* ${encodeURIComponent(payload.customerName)}%0A`;
-    if (payload.customerPhone) message += `*الهاتف:* ${encodeURIComponent(payload.customerPhone)}%0A`;
-    if (payload.customerAddress) message += `*العنوان:* ${encodeURIComponent(payload.customerAddress)}%0A`;
-    message += `----------------------------%0A`;
+    // Build optimized WhatsApp message with comprehensive order details & customer info
+    let message = `*🍕 طلب جديد #${orderId} - مطاعم السلطان محمود*%0A`;
+    message += `==============================%0A`;
+    message += `*📋 تفاصيل العميل ومكان التوصيل:*%0A`;
+    message += `👤 *الاسم:* ${encodeURIComponent(payload.customerName || 'غير محدد')}%0A`;
+    if (payload.customerPhone) {
+      message += `📞 *رقم الهاتف:* ${encodeURIComponent(payload.customerPhone)}%0A`;
+    }
+    message += `📍 *مكان التوصيل والعنوان:* ${encodeURIComponent(payload.customerAddress || 'غير محدد')}%0A`;
+    message += `==============================%0A`;
+    message += `*🍽️ تفاصيل الأوردر والأصناف المطلوبة:*%0A`;
 
     payload.items.forEach((item, idx) => {
-      const branchName = item.dish.branch === 'seafood' ? 'بحري' : 'سوري';
+      const branchName = item.dish.branch === 'seafood' ? 'بحري 🐟' : 'سوري 🍗';
       message += `${idx + 1}. *${encodeURIComponent(item.dish.name)}* (${branchName})%0A`;
-      message += `   الكمية: ${item.quantity} × ${item.dish.price} = *${item.quantity * item.dish.price} ج.م*%0A`;
+      message += `   - الكمية: *${item.quantity}* × ${item.dish.price} ج.م = *${item.quantity * item.dish.price} ج.م*%0A`;
       if (item.notes) {
-        message += `   ملاحظة: ${encodeURIComponent(item.notes)}%0A`;
+        message += `   - ملاحظة: _${encodeURIComponent(item.notes)}_%0A`;
       }
     });
 
-    message += `----------------------------%0A`;
-    message += `*المجموع الفرعي:* ${payload.subtotal} ج.م%0A`;
-    message += `*التوصيل:* ${payload.deliveryFee === 0 ? 'مجاناً' : payload.deliveryFee + ' ج.م'}%0A`;
-    message += `*الإجمالي المطلوب:* *${payload.total} ج.م*%0A`;
+    message += `==============================%0A`;
+    message += `*💵 الحساب الإجمالي:*%0A`;
+    message += `• المجموع الفرعي: ${payload.subtotal} ج.م%0A`;
+    message += `• خدمة التوصيل: ${payload.deliveryFee === 0 ? 'مجاناً' : payload.deliveryFee + ' ج.م'}%0A`;
+    message += `• *المبلغ المطلوب سداده:* *${payload.total} ج.م*%0A`;
 
     if (payload.orderNotes) {
-      message += `%0A*ملاحظات إضافية:* ${encodeURIComponent(payload.orderNotes)}%0A`;
+      message += `%0A📝 *ملاحظات عامة على الطلب:* ${encodeURIComponent(payload.orderNotes)}%0A`;
     }
 
-    message += `%0Aرقم تتبع الطلب: *${orderId}*%0Aشكراً لك!`;
+    message += `%0A🔢 رقم تتبع الطلب: *#${orderId}*%0Aشكراً لاختياركم مطاعم السلطان محمود!`;
 
     const whatsappUrl = `https://wa.me/${RESTAURANT_INFO.phoneRaw}?text=${message}`;
 

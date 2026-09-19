@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Trash2, Plus, Minus, MessageCircle, Phone, ShoppingBag, Sparkles, CheckCircle } from 'lucide-react';
+import { X, Trash2, Plus, Minus, MessageCircle, Phone, ShoppingBag, Sparkles, CheckCircle, ChefHat, Info } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { CartItem } from '../types';
 import { RESTAURANT_INFO } from '../data/dishes';
 import { HighConcurrencyOrderEngine } from '../utils/orderEngine';
+import { playCelebrationChime } from '../utils/audio';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -29,6 +30,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const [orderNotes, setOrderNotes] = useState('');
   const [isOrdered, setIsOrdered] = useState(false);
   const [confirmedOrderId, setConfirmedOrderId] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const subtotal = items.reduce((sum, item) => sum + item.dish.price * item.quantity, 0);
   const deliveryFee = subtotal > 0 ? 15 : 0;
@@ -36,6 +38,24 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   const handleSendOrderWhatsApp = () => {
     if (items.length === 0) return;
+
+    // Strict validation for Name and Delivery Address
+    if (!customerName.trim()) {
+      setFormError('يرجى إدخال اسمك الكريم لتأكيد الحجز');
+      const input = document.getElementById('customer-name-input');
+      if (input) input.focus();
+      return;
+    }
+
+    if (!customerAddress.trim()) {
+      setFormError('يرجى إدخال مكان التوصيل والعنوان بالتفصيل');
+      const input = document.getElementById('customer-address-input');
+      if (input) input.focus();
+      return;
+    }
+
+    // Clear error
+    setFormError(null);
 
     // Trigger celebratory confetti
     try {
@@ -62,6 +82,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
     setConfirmedOrderId(receipt.orderId);
     setIsOrdered(true);
+    playCelebrationChime();
 
     setTimeout(() => {
       window.open(whatsappUrl, '_blank');
@@ -105,6 +126,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             </button>
           </div>
 
+
           {/* Cart Items List */}
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
             {items.length === 0 ? (
@@ -124,99 +146,158 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </button>
               </div>
             ) : (
-              items.map((item) => (
-                <div
-                  key={item.dish.id}
-                  className="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 transition-all"
-                >
-                  {/* Dish Thumbnail */}
-                  <img
-                    src={item.dish.image}
-                    alt={item.dish.name}
-                    referrerPolicy="no-referrer"
-                    className="w-16 h-16 object-cover rounded-xl border border-white/10 shrink-0"
-                  />
-
-                  {/* Info */}
-                  <div className="flex-1 min-w-0">
-                    <h4 className="text-xs sm:text-sm font-bold text-white truncate">
-                      {item.dish.name}
-                    </h4>
-                    <p className="text-xs text-rose-400 font-black mt-0.5">
-                      {item.dish.price * item.quantity} ج.م
-                    </p>
-                    {item.notes && (
-                      <p className="text-[10px] text-slate-400 truncate mt-0.5">
-                        ملاحظة: {item.notes}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Quantity Controls */}
-                  <div className="flex items-center gap-1.5 bg-black/40 px-2 py-1 rounded-xl border border-white/10 shrink-0">
-                    <button
-                      onClick={() => onUpdateQuantity(item.dish.id, -1)}
-                      className="p-1 rounded-lg text-slate-400 hover:text-white"
-                    >
-                      <Minus className="w-3.5 h-3.5" />
-                    </button>
-                    <span className="w-5 text-center text-xs font-bold text-white">
-                      {item.quantity}
-                    </span>
-                    <button
-                      onClick={() => onUpdateQuantity(item.dish.id, 1)}
-                      className="p-1 rounded-lg text-slate-400 hover:text-white"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-
-                  {/* Remove */}
-                  <button
-                    onClick={() => onRemoveItem(item.dish.id)}
-                    className="p-1.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors shrink-0"
-                    title="حذف من السلة"
+              items.map((item) => {
+                return (
+                  <div
+                    key={item.dish.id}
+                    className="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 transition-all"
                   >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              ))
+                    {/* Dish Thumbnail */}
+                    <img
+                      src={item.dish.image}
+                      alt={item.dish.name}
+                      referrerPolicy="no-referrer"
+                      className="w-16 h-16 object-cover rounded-xl border border-white/10 shrink-0"
+                    />
+
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-xs sm:text-sm font-bold text-white truncate">
+                        {item.dish.name}
+                      </h4>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <span className="text-xs text-rose-400 font-black">
+                          {item.dish.price * item.quantity} ج.م
+                        </span>
+                      </div>
+                      {item.notes && (
+                        <p className="text-[10px] text-slate-400 truncate mt-0.5">
+                          ملاحظة: {item.notes}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Quantity Controls */}
+                    <div className="flex items-center gap-1.5 bg-black/40 px-2 py-1 rounded-xl border border-white/10 shrink-0">
+                      <button
+                        onClick={() => onUpdateQuantity(item.dish.id, -1)}
+                        className="p-1 rounded-lg text-slate-400 hover:text-white"
+                      >
+                        <Minus className="w-3.5 h-3.5" />
+                      </button>
+                      <span className="w-5 text-center text-xs font-bold text-white">
+                        {item.quantity}
+                      </span>
+                      <button
+                        onClick={() => onUpdateQuantity(item.dish.id, 1)}
+                        className="p-1 rounded-lg text-slate-400 hover:text-white"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    {/* Remove */}
+                    <button
+                      onClick={() => onRemoveItem(item.dish.id)}
+                      className="p-1.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors shrink-0"
+                      title="حذف من السلة"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                );
+              })
             )}
 
             {/* Quick Customer Delivery Info form */}
             {items.length > 0 && (
-              <div className="mt-4 pt-4 border-t border-white/10 space-y-2.5 bg-black/30 p-3 rounded-2xl border">
-                <span className="text-xs font-bold text-slate-300 block mb-1">
-                  بيانات التوصيل السريع:
-                </span>
-                <input
-                  type="text"
-                  placeholder="اسمك الكريم"
-                  value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-rose-400"
-                />
-                <input
-                  type="tel"
-                  placeholder="رقم الهاتف (للتواصل مع المندوب)"
-                  value={customerPhone}
-                  onChange={(e) => setCustomerPhone(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-rose-400"
-                />
-                <input
-                  type="text"
-                  placeholder="العنوان بالتفصيل (المنطقة، الشارع، العمارة)"
-                  value={customerAddress}
-                  onChange={(e) => setCustomerAddress(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-rose-400"
-                />
-                <input
-                  type="text"
-                  placeholder="ملاحظات للطلب..."
-                  value={orderNotes}
-                  onChange={(e) => setOrderNotes(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-rose-400"
-                />
+              <div className="mt-4 pt-4 border-t border-white/10 space-y-3 bg-black/40 p-3.5 rounded-2xl border border-white/10">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                    <span>بيانات التوصيل والتأكيد:</span>
+                    <span className="text-[10px] text-rose-400 font-normal">(مطلوبة لإرسال الطلب)</span>
+                  </span>
+                </div>
+
+                {/* Validation Error Banner */}
+                {formError && (
+                  <div className="p-2.5 rounded-xl bg-rose-500/20 border border-rose-500/50 text-rose-300 text-xs font-bold flex items-center gap-2 animate-pulse">
+                    <Info className="w-4 h-4 shrink-0 text-rose-400" />
+                    <span>{formError}</span>
+                  </div>
+                )}
+
+                <div>
+                  <label htmlFor="customer-name-input" className="block text-[11px] font-bold text-slate-300 mb-1">
+                    الاسم بالكامل <span className="text-rose-400">*</span>
+                  </label>
+                  <input
+                    id="customer-name-input"
+                    type="text"
+                    required
+                    placeholder="مثال: محمد أحمد"
+                    value={customerName}
+                    onChange={(e) => {
+                      setCustomerName(e.target.value);
+                      if (formError) setFormError(null);
+                    }}
+                    className={`w-full px-3 py-2.5 rounded-xl bg-white/5 border text-xs text-white placeholder:text-slate-500 focus:outline-none transition-all ${
+                      !customerName.trim() && formError
+                        ? 'border-rose-500 ring-2 ring-rose-500/20 bg-rose-950/20'
+                        : 'border-white/10 focus:border-amber-400 focus:ring-1 focus:ring-amber-400/30'
+                    }`}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="customer-phone-input" className="block text-[11px] font-bold text-slate-300 mb-1">
+                    رقم الهاتف للتواصل
+                  </label>
+                  <input
+                    id="customer-phone-input"
+                    type="tel"
+                    placeholder="مثال: 01012345678 (للتواصل مع المندوب)"
+                    value={customerPhone}
+                    onChange={(e) => setCustomerPhone(e.target.value)}
+                    className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400/30 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="customer-address-input" className="block text-[11px] font-bold text-slate-300 mb-1">
+                    مكان التوصيل والعنوان بالتفصيل <span className="text-rose-400">*</span>
+                  </label>
+                  <input
+                    id="customer-address-input"
+                    type="text"
+                    required
+                    placeholder="مثال: ديروط - شارع البحر - بجوار البنك الأهلي - عمارة 4"
+                    value={customerAddress}
+                    onChange={(e) => {
+                      setCustomerAddress(e.target.value);
+                      if (formError) setFormError(null);
+                    }}
+                    className={`w-full px-3 py-2.5 rounded-xl bg-white/5 border text-xs text-white placeholder:text-slate-500 focus:outline-none transition-all ${
+                      !customerAddress.trim() && formError
+                        ? 'border-rose-500 ring-2 ring-rose-500/20 bg-rose-950/20'
+                        : 'border-white/10 focus:border-amber-400 focus:ring-1 focus:ring-amber-400/30'
+                    }`}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="customer-notes-input" className="block text-[11px] font-bold text-slate-300 mb-1">
+                    ملاحظات إضافية على الطلب
+                  </label>
+                  <input
+                    id="customer-notes-input"
+                    type="text"
+                    placeholder="مثال: زيادة تومية، طحينة، بدون بصل، الخ..."
+                    value={orderNotes}
+                    onChange={(e) => setOrderNotes(e.target.value)}
+                    className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400 transition-all"
+                  />
+                </div>
               </div>
             )}
           </div>

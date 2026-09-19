@@ -2200,7 +2200,7 @@ export const DEFAULT_DISHES: DishItem[] = [
 ];
 
 // Local storage helper
-const STORAGE_KEY = 'sultan_mahmoud_dishes_v9_strict_menu';
+const STORAGE_KEY = 'sultan_mahmoud_dishes_v10_optimized_menu';
 
 export const getSavedDishes = (): DishItem[] => {
   try {

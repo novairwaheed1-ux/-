@@ -102,12 +102,12 @@ export default function App() {
   }, []);
 
   // Close all modals helper - ensures no two modals/drawers overlap
-  // Close all modals helper - ensures no two modals/drawers overlap
   const closeAllModals = useCallback(() => {
     setIsCartOpen(false);
     setIsAdminOpen(false);
     setSelectedDish(null);
     setIsPhotoMenuOpen(false);
+    setIsFeastWheelOpen(false);
   }, []);
 
   // Mutually exclusive modal openers

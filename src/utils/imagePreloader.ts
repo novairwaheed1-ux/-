@@ -55,29 +55,19 @@ export const preloadAllImages = async (imageUrls: string[]): Promise<void> => {
   const uniqueUrls = Array.from(new Set(imageUrls.filter(Boolean)));
   if (uniqueUrls.length === 0) return;
 
-  // Let the browser finish initial layout and user interaction smoothly
-  await new Promise((r) => {
-    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-      (window as Window & { requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => void }).requestIdleCallback(r, { timeout: 400 });
-    } else {
-      setTimeout(r, 120);
-    }
-  });
+  // Instantly trigger preload of all images concurrently without artificial delays
+  // The optimized image assets are now only ~30-40KB each (total under 2MB), so prefetching is near-instantaneous
+  const criticalBatch = uniqueUrls.slice(0, 16);
+  const remainingBatch = uniqueUrls.slice(16);
 
-  // High priority critical batch (first 6 visible images)
-  const criticalBatch = uniqueUrls.slice(0, 6);
-  const remainingBatch = uniqueUrls.slice(6);
-
-  // Decode critical batch concurrently
+  // Decode critical above-the-fold batch immediately
   await Promise.allSettled(criticalBatch.map((url) => preloadImage(url)));
 
-  // Decode remaining batch in small background chunks with idle yields
-  const chunkSize = 3;
+  // Rapidly decode remaining dishes in concurrent batches of 8
+  const chunkSize = 8;
   for (let i = 0; i < remainingBatch.length; i += chunkSize) {
     const chunk = remainingBatch.slice(i, i + chunkSize);
     await Promise.allSettled(chunk.map((url) => preloadImage(url)));
-    // Yield to keep UI completely responsive at 60fps
-    await new Promise((r) => setTimeout(r, 60));
   }
 };
 

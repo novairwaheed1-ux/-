@@ -107,6 +107,9 @@ export const CategoryStories: React.FC<CategoryStoriesProps> = React.memo(({
             >
               {/* Circular Avatar Container */}
               <div className="relative">
+                {/* Backlight Glow on hover - softened and calmed on click */}
+                <div className="absolute inset-0 rounded-full blur-md bg-amber-500/0 group-hover:bg-amber-500/20 dark:group-hover:bg-rose-500/20 group-active:opacity-0 transition-all duration-200 pointer-events-none -z-10 group-hover:scale-110 group-active:scale-95" />
+
                 {/* Active or Hover ring */}
                 <div
                   className={`w-15 h-15 sm:w-17 sm:h-17 rounded-full p-[2px] transition-all duration-200 ${

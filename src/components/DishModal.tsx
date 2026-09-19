@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, MessageCircle, ShoppingBag, Plus, Minus, Flame, CheckCircle, Clock, Sparkles, Check } from 'lucide-react';
+import { X, MessageCircle, ShoppingBag, Plus, Minus, Flame, CheckCircle, Sparkles, Check } from 'lucide-react';
 import { DishItem, ExtraOption } from '../types';
 import { SteamEffect } from './SteamEffect';
+
+import { animateAddToCart } from '../utils/cartAnimation';
 
 interface DishModalProps {
   dish: DishItem | null;
@@ -85,12 +87,21 @@ export const DishModal: React.FC<DishModalProps> = ({
   const handleAdd = () => {
     const pkg = getPackagedDish();
     if (!pkg) return;
+    
+    // Trigger flying animation
+    const imgElement = document.getElementById(`modal-dish-img-${dish?.id}`) as HTMLImageElement;
+    if (imgElement && dish?.image) {
+      animateAddToCart(imgElement, dish.image);
+    }
+    
     onAddToCart(pkg, quantity, notes);
     setAddedSuccess(true);
+    
+    // Close modal quickly to show the flying animation more clearly (or keep it open for a bit)
     setTimeout(() => {
       setAddedSuccess(false);
       onClose();
-    }, 700);
+    }, 400); // reduced from 700 to close faster and let the user see the cart jump
   };
 
   const handleWhatsApp = () => {
@@ -177,6 +188,7 @@ export const DishModal: React.FC<DishModalProps> = ({
                 className="relative z-20 w-56 h-56 sm:w-64 sm:h-64 flex items-center justify-center"
               >
                 <img
+                  id={`modal-dish-img-${dish.id}`}
                   src={dish.image}
                   alt={dish.name}
                   referrerPolicy="no-referrer"
@@ -328,14 +340,7 @@ export const DishModal: React.FC<DishModalProps> = ({
               )}
 
               {/* Special Specs */}
-              <div className="grid grid-cols-3 gap-2 mt-3.5 pt-3 border-t border-white/10 text-center">
-                <div className="p-2 rounded-xl bg-white/5 border border-white/5">
-                  <span className="text-[10px] text-slate-400 block">وقت التحضير</span>
-                  <span className="text-xs font-bold text-white flex items-center justify-center gap-1 mt-0.5">
-                    <Clock className="w-3 h-3 text-rose-300" />
-                    {dish.prepTimeMinutes || 15} دقيقة
-                  </span>
-                </div>
+              <div className="grid grid-cols-2 gap-2 mt-3.5 pt-3 border-t border-white/10 text-center">
                 <div className="p-2 rounded-xl bg-white/5 border border-white/5">
                   <span className="text-[10px] text-slate-400 block">السعرات</span>
                   <span className="text-xs font-bold text-white block mt-0.5">

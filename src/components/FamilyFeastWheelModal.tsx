@@ -17,6 +17,7 @@ import {
   FamilyFeastItem,
 } from '../data/familyFeasts';
 import { playReelSound, playCelebrationChime } from '../utils/audio';
+import { animateAddToCart } from '../utils/cartAnimation';
 
 interface FamilyFeastWheelModalProps {
   isOpen: boolean;
@@ -292,6 +293,13 @@ export const FamilyFeastWheelModal: React.FC<FamilyFeastWheelModalProps> = ({
   // Add to cart with tactile feedback and celebration chime
   const handleAdd = () => {
     playCelebrationChime();
+    
+    // Trigger flying animation
+    const imgElement = document.getElementById(`feast-img-${activeDish.id}`) as HTMLImageElement;
+    if (imgElement && activeDish.image) {
+      animateAddToCart(imgElement, activeDish.image);
+    }
+    
     setIsAddedAnim(true);
     setTimeout(() => setIsAddedAnim(false), 1200);
     onAddToCart(activeDish);
@@ -693,6 +701,7 @@ export const FamilyFeastWheelModal: React.FC<FamilyFeastWheelModalProps> = ({
                         {/* High-Definition Razor-Sharp Food Image */}
                         <div className="relative w-full h-full rounded-full overflow-hidden shadow-inner flex items-center justify-center pointer-events-none bg-stone-950 border border-stone-800">
                           <img
+                            id={`feast-img-${feast.id}`}
                             src={feast.image}
                             alt={feast.name}
                             loading="eager"

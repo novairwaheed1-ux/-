@@ -86,13 +86,3 @@ export interface ChatMessage {
   readByAdmin?: boolean;
   readByCustomer?: boolean;
 }
-
-export interface ConversationThread {
-  id: string;
-  customer: CustomerProfile;
-  messages: ChatMessage[];
-  unreadCountForAdmin: number;
-  unreadCountForCustomer: number;
-  updatedAt: number;
-  status: 'open' | 'resolved' | 'pending';
-}

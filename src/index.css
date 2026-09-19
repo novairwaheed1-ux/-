@@ -84,13 +84,13 @@ html, body {
 
 /* 
  * Ultra-performance card isolation:
- * content-visibility: auto skips layout & paint for off-screen cards,
- * allowing low-end and high-end phones to scroll seamlessly at 120Hz locked.
+ * content-visibility: auto skips layout & paint for off-screen cards.
+ * Notice: We use contain: layout style (NOT paint) so hover glows and popouts are never clipped!
  */
 .mobile-optimized-card {
   content-visibility: auto;
   contain-intrinsic-size: 1px 290px;
-  contain: layout style paint;
+  contain: layout style;
   transform: translate3d(0, 0, 0);
   -webkit-transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
@@ -99,7 +99,29 @@ html, body {
 /* Custom High-Performance Animations & Styling */
 .food-popout-stage {
   position: relative;
-  contain: layout paint;
+}
+
+/* Luminous Glow Aura for Dish on Hover & Calmed on Click */
+.dish-glow-aura {
+  position: absolute;
+  border-radius: 9999px;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+  z-index: 15;
+}
+
+.group:hover .dish-glow-aura {
+  opacity: 0.35;
+  transform: scale(1.06);
+}
+
+/* Calmed down and softened when clicking with mouse */
+.group:active .dish-glow-aura {
+  opacity: 0.08;
+  transform: scale(0.96);
+  transition: opacity 0.12s ease-out, transform 0.12s ease-out;
 }
 
 /* Lightweight food image popout optimized strictly for GPU compositor */
@@ -113,9 +135,12 @@ html, body {
   transition: transform 0.15s cubic-bezier(0.2, 0, 0, 1);
 }
 
-.group:active .food-image-popout,
 .group:hover .food-image-popout {
-  transform: translateY(-3px) scale(1.03) translate3d(0, 0, 0);
+  transform: translateY(-2px) scale(1.03) translate3d(0, 0, 0);
+}
+
+.group:active .food-image-popout {
+  transform: translateY(0px) scale(0.97) translate3d(0, 0, 0);
 }
 
 /* Gentle yet noticeable Cart Shake animation */

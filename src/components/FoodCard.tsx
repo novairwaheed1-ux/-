@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { Flame, Award, Plus, Sparkles, Check } from 'lucide-react';
 import { DishItem } from '../types';
 import { playReelSound } from '../utils/audio';
+import { animateAddToCart } from '../utils/cartAnimation';
 
 interface FoodCardProps {
   dish: DishItem;
@@ -32,6 +33,12 @@ export const FoodCard: React.FC<FoodCardProps> = React.memo(({
     playReelSound();
     setIsAddedAnim(true);
     setTimeout(() => setIsAddedAnim(false), 900);
+
+    // Trigger flying animation
+    const imgElement = document.getElementById(`foodcard-img-${dish.id}`) as HTMLImageElement;
+    if (imgElement && dish.image) {
+      animateAddToCart(imgElement, dish.image);
+    }
 
     if (dish.sizes && dish.sizes.length > 0) {
       const chosenSize = dish.sizes[selectedSizeIndex];
@@ -79,23 +86,42 @@ export const FoodCard: React.FC<FoodCardProps> = React.memo(({
           </div>
         )}
 
-        {/* Circular / Rounded Plate Stage with Lightweight Popout */}
+        {/* Circular / Rounded Plate Stage with Lightweight Popout & Calmed Glowing Aura */}
         <div className="food-popout-stage relative w-full h-32 sm:h-38 flex items-center justify-center my-1 z-10">
-          {/* Circular textured dark plate container */}
-          <div className="absolute w-26 h-26 sm:w-32 sm:h-32 rounded-full bg-gradient-to-tr from-[#1b140f] to-[#302219] border border-stone-200/50 dark:border-white/10 shadow-inner group-hover:scale-102 transition-transform duration-200" />
+          {/* Luminous Glow Halo Layer (Calmed down, no intense blast on click) */}
+          <div 
+            className={`dish-glow-aura absolute w-24 h-24 sm:w-28 sm:h-28 rounded-full blur-lg pointer-events-none transition-all duration-200 ${
+              isSeafood
+                ? 'bg-sky-400/20 shadow-[0_0_15px_4px_rgba(56,189,248,0.18)] group-active:opacity-0 group-active:shadow-none'
+                : 'bg-amber-400/20 shadow-[0_0_15px_4px_rgba(245,158,11,0.18)] group-active:opacity-0 group-active:shadow-none'
+            }`}
+          />
 
-          {/* Food Image: Hardware-accelerated with zero JS animation overhead */}
-          <div className="food-image-popout relative w-28 h-28 sm:w-34 sm:h-34 flex items-center justify-center pointer-events-none transform-gpu">
+          {/* Circular textured plate with subtle illuminated rim */}
+          <div 
+            className={`absolute w-26 h-26 sm:w-32 sm:h-32 rounded-full bg-gradient-to-tr from-[#1b140f] to-[#302219] border transition-all duration-200 ease-out shadow-inner ${
+              isSeafood
+                ? 'border-stone-200/50 dark:border-white/10 group-hover:border-sky-400/50 group-hover:shadow-[0_0_12px_rgba(56,189,248,0.25)] group-active:shadow-none group-active:border-stone-200/30'
+                : 'border-stone-200/50 dark:border-white/10 group-hover:border-amber-400/50 group-hover:shadow-[0_0_12px_rgba(245,158,11,0.25)] group-active:shadow-none group-active:border-stone-200/30'
+            } group-hover:scale-95 group-active:scale-95`} 
+          />
+
+          {/* Food Image: Hardware-accelerated with subtle physical popout */}
+          <div className="food-image-popout relative w-28 h-28 sm:w-34 sm:h-34 flex items-center justify-center pointer-events-none transform-gpu z-10">
             <img
+              id={`foodcard-img-${dish.id}`}
               src={dish.image}
               alt={dish.name}
               width={136}
               height={136}
-              loading="lazy"
-              decoding="async"
-              fetchPriority="low"
+              loading="eager"
+              decoding="sync"
               referrerPolicy="no-referrer"
-              className="w-full h-full object-contain transition-transform duration-200 group-hover:scale-105"
+              className={`w-full h-full object-contain rounded-full transition-all duration-200 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] group-hover:scale-108 group-hover:-translate-y-1.5 group-active:scale-98 group-active:translate-y-0 ${
+                isSeafood
+                  ? 'group-hover:drop-shadow-[0_4px_12px_rgba(56,189,248,0.3)] group-active:drop-shadow-none'
+                  : 'group-hover:drop-shadow-[0_4px_12px_rgba(245,158,11,0.3)] group-active:drop-shadow-none'
+              }`}
             />
           </div>
         </div>

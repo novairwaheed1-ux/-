@@ -387,22 +387,53 @@ export const MenuSection: React.FC<MenuSectionProps> = React.memo(({
           )}
         </div>
 
-        {/* Dishes Grid with Single Smooth Container Fade for Ultimate Performance */}
+        {/* Dishes Grid with Staggered Cinematic Animation on Load & Category Change */}
         <motion.div
           key={`${currentBranch}-${currentCategory}`}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.25, ease: 'easeOut' }}
+          variants={{
+            hidden: { opacity: 0 },
+            show: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.045,
+                delayChildren: 0.02,
+              },
+            },
+          }}
+          initial="hidden"
+          animate="show"
           className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3.5 transform-gpu"
         >
-          {displayedDishes.map((dish) => (
-            <FoodCard
+          {displayedDishes.map((dish, index) => (
+            <motion.div
               key={dish.id}
-              dish={dish}
-              onAddToCart={onAddToCart}
-              onSelectDish={onSelectDish}
-              onOrderWhatsApp={onOrderWhatsApp}
-            />
+              variants={{
+                hidden: {
+                  opacity: 0,
+                  y: 18,
+                  scale: 0.96,
+                },
+                show: {
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                  transition: {
+                    type: 'spring',
+                    stiffness: 380,
+                    damping: 26,
+                    mass: 0.8,
+                  },
+                },
+              }}
+              className="h-full flex flex-col"
+            >
+              <FoodCard
+                dish={dish}
+                onAddToCart={onAddToCart}
+                onSelectDish={onSelectDish}
+                onOrderWhatsApp={onOrderWhatsApp}
+              />
+            </motion.div>
           ))}
         </motion.div>
       </div>

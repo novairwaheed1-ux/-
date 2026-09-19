@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'motion/react';
+import React, { useEffect } from 'react';
+import { motion, useAnimation } from 'motion/react';
 import {
   Home,
   UtensilsCrossed,
@@ -23,6 +23,37 @@ export const FloatingActions: React.FC<FloatingActionsProps> = ({
   onOpenMenu,
   onScrollToTop,
 }) => {
+  const cartControls = useAnimation();
+
+  useEffect(() => {
+    const handleCartJump = () => {
+      // Cart springs up eagerly (-46px) to meet and catch the item in mid-air,
+      // squashes downward (+8px) under the item's weight,
+      // then gives a delightful gentle wobble/shake (rotate & x wiggle) as it settles.
+      cartControls.start({
+        y: [0, -46, 8, -4, 2, 0],
+        x: [0, 0, -3, 3, -1.5, 1.5, 0],
+        rotate: [0, -5, 6, -4, 2, 0],
+        scale: [1, 1.28, 0.88, 1.06, 0.98, 1],
+        boxShadow: [
+          "0px 4px 10px rgba(0,0,0,0.1)",
+          "0px 0px 20px 4px rgba(245,158,11,0.35)",
+          "0px 6px 14px rgba(0,0,0,0.18)",
+          "0px 4px 10px rgba(0,0,0,0.1)"
+        ],
+        transition: { 
+          duration: 0.62,
+          times: [0, 0.32, 0.58, 0.74, 0.88, 1],
+          ease: ["easeOut", "easeInOut", "easeOut", "easeIn", "easeInOut"]
+        }
+      });
+      playReelSound();
+    };
+
+    window.addEventListener('cart-receive-item', handleCartJump);
+    return () => window.removeEventListener('cart-receive-item', handleCartJump);
+  }, [cartControls]);
+
   const handleHomeClick = () => {
     playReelSound();
     if (onScrollToTop) {
@@ -73,6 +104,7 @@ export const FloatingActions: React.FC<FloatingActionsProps> = ({
 
         {/* 2. Cart / السلة (Enlarged) */}
         <motion.button
+          animate={cartControls}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.93 }}
           id="nav-cart-btn"
